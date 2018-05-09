@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "module": "es6",
+        "target": "es2017",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "outDir": "./cgi/",
+        "sourceMap": true,
+        "pretty": true,
+        "strict": true
+    },
+    "include": [
+        "src/**/*"
+    ]
+}
