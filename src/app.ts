@@ -1,28 +1,32 @@
+import { ClipboardManager, CanvasListener } from "./clipboard.js";
+
 class App {
+	private ClipboardManager: ClipboardManager = new ClipboardManager();
 
 	Run(): void {
+		let canvasListener = new CanvasListener('prototypeCanvas');
 		let canvasElement: HTMLCanvasElement = <HTMLCanvasElement>document.getElementById('prototypeCanvas');
-		canvasElement.oncut = (event: ClipboardEvent) => { this.HandleCut('canvas', event) }
-		canvasElement.onpaste = (event: ClipboardEvent) => { this.HandlePaste('canvas', event) }
-		canvasElement.oncopy = (event: ClipboardEvent) => { this.HandleCopy('canvas', event) }
+		// these methods will never be called because the canvas is not "contenteditable"
+		canvasElement.oncut = this.ClipboardManager.OnInternalCut;
+		canvasElement.onpaste = this.ClipboardManager.OnInternalPaste;
+		canvasElement.oncopy = this.ClipboardManager.OnInternalCopy;
 
-		document.documentElement.oncut = (event: ClipboardEvent) => { this.HandleCut('document', event) }
-		document.documentElement.onpaste = (event: ClipboardEvent) => { this.HandlePaste('document', event) }
-		document.documentElement.oncopy = (event: ClipboardEvent) => { this.HandleCopy('document', event) }
+		canvasElement.onmousedown = (ev: MouseEvent) => {
+			console.log(ev);
+			if(ev.shiftKey) {
+				this.ClipboardManager.OnInternalCopy();
+			}
+			if(ev.ctrlKey) {
+				this.ClipboardManager.OnInternalCut();
+			}
+			if(ev.altKey) {
+				this.ClipboardManager.OnInternalPaste();
+			}
+		};
 
-		// typescript doesn't support navigator.clipboard/permission yet
-	}
-
-	private HandleCopy(source: string, event: ClipboardEvent) {
-		console.log(`copy from ${source}`, event);
-	}
-
-	private HandleCut(source: string, event: ClipboardEvent) {
-		console.log(`cut from ${source}`, event);
-	}
-
-	private HandlePaste(source: string, event: ClipboardEvent) {
-		console.log(`paste from ${source}`, event);
+		document.documentElement.oncut = this.ClipboardManager.OnExternalCut;
+		document.documentElement.onpaste = this.ClipboardManager.OnExternalPaste;
+		document.documentElement.oncopy = this.ClipboardManager.OnExternalCopy;
 	}
 }
 
