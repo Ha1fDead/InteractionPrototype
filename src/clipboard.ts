@@ -1,19 +1,19 @@
 import { IInterfaceContext } from "./interfacecontext.js";
 
-enum ClipboardDict {
+export enum ClipboardDict {
 	Cut = 'cut',
 	Copy = 'copy',
 	Paste = 'paste'
 }
 
-enum DragDropDict {
+export enum DragDropDict {
 	Copy = "copy",
 	Move = "move",
 	Link = "link"
 }
 
 // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Recommended_drag_types
-enum DataTransferTypes {
+export enum DataTransferTypes {
 	Text = 'text/plain'
 }
 

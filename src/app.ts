@@ -1,4 +1,5 @@
-import { ClipboardManager, CanvasContext } from "./clipboard.js";
+import { ClipboardManager } from "./clipboard.js";
+import { CanvasContext } from "./canvascontext.js";
 
 class App {
 	private ClipboardManager: ClipboardManager = new ClipboardManager();
