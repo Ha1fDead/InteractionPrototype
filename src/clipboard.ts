@@ -141,6 +141,14 @@ export class ClipboardManager {
 	}
 
 	/**
+	 * Also solves the "External" -> "Internal" paste problem, but requires browser permissions so not ideal
+	 */
+	async AttemptReadClipboardData(): Promise<DataTransfer | null> {
+		let clipboard: any = (<any>navigator).clipboard;
+		return clipboard.read();
+	}
+
+	/**
 	 * When a browser clipboard copy event is intercepted, check which element has the current focus
 	 * If it is the INTERNAL clipboard element, then procede with our app-specific copy rules
 	 * Otherwise, let the action persist natively.
@@ -353,11 +361,17 @@ export class ClipboardManager {
 		this.InterfaceContexts.splice(index, 1);
 	}
 
-	AttemptCopyClipboardData(data: DataTransfer, event?: ClipboardEvent): void {
-		// TODO https://developer.mozilla.org/en-US/docs/Web/Events/paste
-		//(<any>navigator).Clipboard
-
-		console.log(navigator);
+	async AttemptCopyClipboardData(data: DataTransfer, event?: ClipboardEvent): Promise<void> {
+		/**
+		 * Note: Chrome does not currently support arbitrary "Write" operations
+		 * 
+		 * This means this will only support text copy for now. "Write" will probably (hopefully) be implemented within the next year.
+		 * 
+		 * https://developer.mozilla.org/en-US/docs/Web/Events/paste
+		 */
+		let clipboard: any = (<any>navigator).clipboard;
+		await clipboard.writeText(data.getData(DataTransferTypes.Text));
+		// await clipboard.write(data);
 	}
 
 	private FindActiveContext(): IInterfaceContext | null {

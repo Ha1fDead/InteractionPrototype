@@ -31,6 +31,13 @@ Some other nuances of cut, not all programs delete the "Cut" buffer.
 
 I believe my favoured implementations are #2 for both options.
 
+## Browser Behaviors
+
+Regarding the asynchronous APIs, it appears that (in Chrome)
+
+- You can always set data into the clipboard without explicit permissions
+- Reading from the clipboard asynchronously always requires permissions
+
 ## When to use Webgl or Html/CSS
 
 - I need to determine when to use a canvas element, and when do use native complex html /css

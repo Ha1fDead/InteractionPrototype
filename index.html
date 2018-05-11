@@ -8,6 +8,44 @@
 	<body>
 		<main>
 			<canvas id="prototypeCanvas" tabindex="0" width="400" height="600" style="border: 1px solid black"></canvas>
+			<p>shift+click = "internal copy"</p>
+			<p>ctrl+click = "internal cut"</p>
+			<p>alt+click = "internal paste"</p>
+			<table>
+				<thead>
+					<tr>
+						<th></th>
+						<th>(D) Internal</th>
+						<th>(D) External</th>
+						<th>(D) System</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<th>(S) Internal</th>
+						<th>Y</th>
+						<th>Y</th>
+						<th>Y</th>
+					</tr>
+					<tr>
+						<th>(S) External</th>
+						<th>N</th>
+						<th>Y</th>
+						<th>Y</th>
+					</tr>
+					<tr>
+						<th>(S) System</th>
+						<th>N</th>
+						<th>Y</th>
+						<th>Y</th>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<th>(S) = Source, (D) = Destination</th>
+					</tr>
+				</tfoot>
+			</table>
 			<p>some paragraph</p>
 			<p>other paragraph</p>
 			<input type="text" value="some text element"/>
