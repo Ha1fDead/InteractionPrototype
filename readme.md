@@ -7,6 +7,15 @@ This is a prototype for interacting with the Clipboard in HTML5. Prototype shoul
 3. document.Exec
 4. intercepting raw `ctrl-c` and `ctrl-v` commands
 
+## Setting Up Project
+
+- [use this command](https://stackoverflow.com/questions/35127383/npm-http-server-with-ssl)
+- [copy this openssl conf file](http://web.mit.edu/crypto/openssl.cnf)
+
+```Powershell
+Code\Valhalla\Prototypes\Clipboard> openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem -config .\openssl.conf
+```
+
 ## Behaviors
 
 Cut has a variety of implementations:

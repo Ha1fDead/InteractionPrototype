@@ -89,6 +89,8 @@ export class CanvasContext implements IInterfaceContext {
      */
 	HandlePaste(data: DataTransfer): void {
 		this.pasteHistory.push(data.getData(DataTransferTypes.Text));
+
+		// quick and dirty paste demonstration
 		let canvas = <HTMLCanvasElement>document.getElementById(this.Id);
 		let canvasCtx = <CanvasRenderingContext2D>canvas.getContext("2d");
 		canvasCtx.clearRect(0, 0, 400, 600);
@@ -99,6 +101,11 @@ export class CanvasContext implements IInterfaceContext {
 		}
 	}
 }
+
+// Do I need to have an internal copy if I can trigger document.exec(copy) ??
+	// are there permissions associated with it?
+	// otherwise internal copy can just be document.exec(copy) and then I get an external copy event
+	// for paste, maybe the same thing
 
 /**
  * There should only ever be a single 'Clipboard' object in the entire application. Unlike undo/redo, the clipboard should always reference the same data.
@@ -348,6 +355,9 @@ export class ClipboardManager {
 
 	AttemptCopyClipboardData(data: DataTransfer, event?: ClipboardEvent): void {
 		// TODO https://developer.mozilla.org/en-US/docs/Web/Events/paste
+		//(<any>navigator).Clipboard
+
+		console.log(navigator);
 	}
 
 	private FindActiveContext(): IInterfaceContext | null {
