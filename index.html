@@ -15,26 +15,26 @@
 				<thead>
 					<tr>
 						<th></th>
-						<th>(D) Internal</th>
-						<th>(D) External</th>
-						<th>(D) System</th>
+						<th>(P) Internal</th>
+						<th>(P) External</th>
+						<th>(P) System</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
-						<th>(S) Internal</th>
+						<th>(C) Internal</th>
 						<th>Y</th>
 						<th>Y</th>
 						<th>Y</th>
 					</tr>
 					<tr>
-						<th>(S) External</th>
+						<th>(C) External</th>
 						<th>N</th>
 						<th>Y</th>
 						<th>Y</th>
 					</tr>
 					<tr>
-						<th>(S) System</th>
+						<th>(C) System</th>
 						<th>N</th>
 						<th>Y</th>
 						<th>Y</th>
@@ -42,10 +42,33 @@
 				</tbody>
 				<tfoot>
 					<tr>
-						<th>(S) = Source, (D) = Destination</th>
+						<th>(C) = Copy, (P) = Paste</th>
 					</tr>
 				</tfoot>
 			</table>
+			<p>
+				To test this, there are 9 cases (outlined above):
+				<ul>
+					<li>Copy "internally" into the "internal" clipboard (shift+click in the canvas)</li>
+					<ol>
+						<li>Paste "internally" into the clipboard (alt+click in the canvas)</li>
+						<li>Paste "externally" in the browser (anyway) via "ctrl-v"</li>
+						<li>Paste "systemly" outside of the browser (via "ctrl-v"</li>
+					</ol>
+					<li>Copy "externally" (anywhere in the browser via "ctrl-c"</li>
+					<ol>
+						<li>Paste "internally" into the clipboard (alt+click in the canvas) [NOT FUNCTIONING]</li>
+						<li>Paste "externally" in the browser (anyway) via "ctrl-v"</li>
+						<li>Paste "systemly" outside of the browser (via "ctrl-v"</li>
+					</ol>
+					<li>Copy "Systemly" (anywhere in the system via "ctrl-c"</li>
+					<ol>
+						<li>Paste "internally" into the clipboard (alt+click in the canvas) [NOT FUNCTIONING]</li>
+						<li>Paste "externally" in the browser (anyway) via "ctrl-v"</li>
+						<li>Paste "systemly" outside of the browser (via "ctrl-v"</li>
+					</ol>
+				</ul>
+			</p>
 			<p>some paragraph</p>
 			<p>other paragraph</p>
 			<input type="text" value="some text element"/>
