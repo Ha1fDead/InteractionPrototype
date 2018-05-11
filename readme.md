@@ -22,31 +22,6 @@ Some other nuances of cut, not all programs delete the "Cut" buffer.
 
 I believe my favoured implementations are #2 for both options.
 
-## Findings
-
-So far, it seems that the clipboard api will not function from within a non-interactive element natively. This means the implementation has to:
-
-1. Inside of a canvas, provide your own `Clipboard` to copy/paste app/canvas elmements natively
-2. When a user COPIES or CUTS an element from your `Canvas`, write it into your own clipboard
-3. Whenever you cut/copy an object from within the canvas, you must delete the current clipboard contents (and ideally replace with a reference to yours)
-4. Whenever someone cut/copies an object from outside of the canvas, you must clear your internal canvas
-  Note: This DOES NOT require permissions
-
-Considerations:
-
-- If someone denies your app permissions, there will be two clipboards when pasting INSIDE of your canvas. E.g.
-  - Copy an internal canvas element
-  - Paste it normally
-  - Copy something outside of the canvas
-  - Attempt to paste it within the canvas, your PREVIOUSLY copied element will be pasted again
-
-
-## Unanswered Questions
-
-- How did "legacy" webapps like Roll20, Facebook, & Discord support the clipboard?
-- Do I even need to use the Clipboard Api?
-  - Browser natively
-
 ## When to use Webgl or Html/CSS
 
 - I need to determine when to use a canvas element, and when do use native complex html /css
@@ -54,7 +29,7 @@ Considerations:
   - but they need to be "Bolted" on seamlessly
 - Are there any instances of me wanting to make an interface WITHIN the game space itself? Most interfaces are just 2d flat interfaces...
 
-## Reasons for needing to figure this out:
+Reasons for needing to figure this out:
 
 - Take advantage of existing CSS animations, new HTML features (Drag and Drop)
 - Avoid having to recreate simple interfaces in webgl

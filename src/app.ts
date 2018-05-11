@@ -1,18 +1,13 @@
-import { ClipboardManager, CanvasListener } from "./clipboard.js";
+import { ClipboardManager, CanvasContext } from "./clipboard.js";
 
 class App {
 	private ClipboardManager: ClipboardManager = new ClipboardManager();
 
 	Run(): void {
-		let canvasListener = new CanvasListener('prototypeCanvas');
+		let canvasListener = new CanvasContext('prototypeCanvas');
+		this.ClipboardManager.SubscribeContext(canvasListener);
 		let canvasElement: HTMLCanvasElement = <HTMLCanvasElement>document.getElementById('prototypeCanvas');
-		// these methods will never be called because the canvas is not "contenteditable"
-		canvasElement.oncut = this.ClipboardManager.OnInternalCut;
-		canvasElement.onpaste = this.ClipboardManager.OnInternalPaste;
-		canvasElement.oncopy = this.ClipboardManager.OnInternalCopy;
-
 		canvasElement.onmousedown = (ev: MouseEvent) => {
-			console.log(ev);
 			if(ev.shiftKey) {
 				this.ClipboardManager.OnInternalCopy();
 			}

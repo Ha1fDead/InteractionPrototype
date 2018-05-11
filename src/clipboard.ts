@@ -1,25 +1,43 @@
-export interface IClipboardSubscriber {
+
+/**
+ * Interface Contexts are used to bind DOM functionality into virtual elements, such as:
+ * 
+ * 1. Clipboard copy / cut / paste
+ * 2. Local undo/redo (unsupported atm)
+ * 3. Drag n Drop
+ * 4. Contextual "Tab" to select unique items (unsupported atm)
+ * 
+ * All "Windows" are InterfaceContexts, but not all "InterfaceContexts" are windows
+ * 
+ * Example contexts:
+ * 
+ * 1. Character Sheet (multiple sheets can be loaded at one time)
+ * 2. Canvas / Scene (could potentially have multiple scenes open at any time)
+ * 
+ * In the future, contexts will support
+ */
+export interface IInterfaceContext {
 	/**
-	 * The Id of the DOM element that you want to bind a clipboard to
+	 * The Id of the DOM element that you want to bind the InterfaceContext to
 	 */
 	Id: string;
 
 	/**
-	 * The element's custom handled 'Cut' operation
+	 * The context's custom handled 'Cut' operation
 	 * 
-	 * This method should REMOVE the element via a command (so the user can undo it) and return a DataTransfer object representing the data entirely so it can be replicated
+	 * This method should REMOVE the cut item via a command (so the user can undo it) and return a DataTransfer object representing the data entirely so it can be replicated
 	 */
 	HandleCut(): DataTransfer;
 
 	/**
-	 * The element's custom handled 'Copy' operation
+	 * The context's custom handled 'Copy' operation
 	 * 
 	 * This method should make a copy of the data in a DataTransfer object so it can be replicated at-will from the user
 	 */
 	HandleCopy(): DataTransfer;
 
 	/**
-	 * The element's custom handled 'Paste' operation
+	 * The context's custom handled 'Paste' operation
 	 * 
 	 * This method should build a "Paste Event" into the command stack so the user can undo this.
 	 * @param data to be pasted
@@ -37,7 +55,8 @@ enum DataTransferTypes {
 	Text = 'text/plain'
 }
 
-export class CanvasListener implements IClipboardSubscriber {
+export class CanvasContext implements IInterfaceContext {
+	private pasteHistory: string[] = [];
 	constructor(public Id: string) {
 
 	}
@@ -69,7 +88,15 @@ export class CanvasListener implements IClipboardSubscriber {
      * @param data to be pasted
      */
 	HandlePaste(data: DataTransfer): void {
-		console.log(data);
+		this.pasteHistory.push(data.getData(DataTransferTypes.Text));
+		let canvas = <HTMLCanvasElement>document.getElementById(this.Id);
+		let canvasCtx = <CanvasRenderingContext2D>canvas.getContext("2d");
+		canvasCtx.clearRect(0, 0, 400, 600);
+		let idx = 0;
+		for (let paste of this.pasteHistory) {
+			canvasCtx.fillText(paste, 50, idx * 50, 40);
+			idx++;
+		}
 	}
 }
 
@@ -78,23 +105,32 @@ export class CanvasListener implements IClipboardSubscriber {
  * 
  * The clipboard manager also allows clipboard operations with non "editablecontent" fields (https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/contenteditable)
  * 
- * Simply add a ClipboardSubscriber to the manager and go from there!
+ * Simply add an InterfaceContext to the manager and go from there!
  * 
  * There is some nuance as we cannot completely control the browser's clipboard without explicit user permission. This manager makes interacting with the clipboard easier by abstracting
  * some of the permission nuance. 
  */
 export class ClipboardManager {
-	private clippedDataTimestamp: number | null;
-	private clippedData: DataTransfer | null;
-	private ClipboardSubscribers: IClipboardSubscriber[];
+	private internalClipboardData: DataTransfer | null;
+	private InterfaceContexts: IInterfaceContext[];
 
 	// These functions are meant to be passed by reference, so capture 'this'
 	private self = this;
 
 	constructor() {
-		this.clippedData = null;
-		this.clippedDataTimestamp = null;
-		this.ClipboardSubscribers = [];
+		this.internalClipboardData = null;
+		this.InterfaceContexts = [];
+	}
+
+	/**
+	 * NOTE: This is unsupported in ALL browsers
+	 * https://www.w3.org/TR/clipboard-apis/#clipboard-events-and-interfaces
+	 * 
+	 * This should fire if a user copies something EXTERNALLY
+	 */
+	OnClipboardChange = (event: ClipboardEvent): void => {
+		// When this is supported, it will solve the "System" -> "Internal" use case
+		this.internalClipboardData = event.clipboardData;
 	}
 
 	/**
@@ -121,14 +157,19 @@ export class ClipboardManager {
 			throw new Error('All external clipboard events must be trusted.');
 		}
 
-		let subscriber = this.FindActiveClipboardSubscriber();
-		if(subscriber === null) {
+		let activeContext = this.FindActiveContext();
+		if(activeContext === null) {
+			// To support External -> Internal paste, I will have to manually convert the copy types
+			// Is there a way to do this natively?
+			
+			// Alternatively, if "OnClipboardChange" fires, that will solve this use case
+			this.internalClipboardData = null;
 			return;
 		}
 
 		event.preventDefault();
-		this.clippedData = subscriber.HandleCopy();
-		this.AttemptCopyClipboardData(this.clippedData, event);
+		this.internalClipboardData = activeContext.HandleCopy();
+		this.AttemptCopyClipboardData(this.internalClipboardData, event);
 	}
 
 	/**
@@ -156,13 +197,14 @@ export class ClipboardManager {
 	 * 3. User pastes text outside of app, which is the same text as #2
 	 */
 	OnInternalCopy(): void {
-		let subscriber = this.FindActiveClipboardSubscriber();
-		if(subscriber === null) {
+		let activeContext = this.FindActiveContext();
+		if(activeContext === null) {
+			this.internalClipboardData = null;
 			return;
 		}
 
-		this.clippedData = subscriber.HandleCopy();
-		this.AttemptCopyClipboardData(this.clippedData);
+		this.internalClipboardData = activeContext.HandleCopy();
+		this.AttemptCopyClipboardData(this.internalClipboardData);
 	}
 
 	/**
@@ -189,14 +231,15 @@ export class ClipboardManager {
 			throw new Error('All external clipboard events must be trusted.');
 		}
 
-		let subscriber = this.FindActiveClipboardSubscriber();
-		if(subscriber === null) {
+		let activeContext = this.FindActiveContext();
+		if(activeContext === null) {
+			this.internalClipboardData = null;
 			return;
 		}
 		
 		event.preventDefault();
-		this.clippedData = subscriber.HandleCut();
-		this.AttemptCopyClipboardData(this.clippedData, event);
+		this.internalClipboardData = activeContext.HandleCut();
+		this.AttemptCopyClipboardData(this.internalClipboardData, event);
 	}
 
 	/**
@@ -212,13 +255,14 @@ export class ClipboardManager {
 	 * 3b. Remove the "Selected" element, copy the element into the internal clipboard, and ATTEMPT to copy the element into the external clipboard
 	 */
 	OnInternalCut(): void {
-		let subscriber = this.FindActiveClipboardSubscriber();
-		if(subscriber === null) {
+		let activeContext = this.FindActiveContext();
+		if(activeContext === null) {
+			this.internalClipboardData = null;
 			return;
 		}
 
-		this.clippedData = subscriber.HandleCut();
-		this.AttemptCopyClipboardData(this.clippedData);
+		this.internalClipboardData = activeContext.HandleCut();
+		this.AttemptCopyClipboardData(this.internalClipboardData);
 	}
 
 	/**
@@ -250,24 +294,23 @@ export class ClipboardManager {
 			throw new Error('All external clipboard events must be trusted.');
 		}
 
-		let subscriber = this.FindActiveClipboardSubscriber();
-		if(subscriber === null) {
+		let activeContext = this.FindActiveContext();
+		if(activeContext === null) {
 			return;
 		}
 
 		let dataToUse: DataTransfer;
-		if(this.clippedDataTimestamp === null || this.clippedDataTimestamp < event.timeStamp) {
+		if(this.internalClipboardData === null) {
 			dataToUse = event.clipboardData;
 		} else {
-			dataToUse = <DataTransfer>this.clippedData;
+			dataToUse = <DataTransfer>this.internalClipboardData;
 		}
-
 		event.preventDefault();
-		subscriber.HandlePaste(dataToUse);
+		activeContext.HandlePaste(dataToUse);
 	}
 
 	/**
-	 * Internal element triggered paste event
+	 * Internal element triggered paste event.
 	 * 
 	 * Fired: right-click, paste or internal paste buttons
 	 * 
@@ -277,44 +320,46 @@ export class ClipboardManager {
 	 * 3. Fire a "Paste" action into the command stack with the most-recent "copied" item
 	 */
 	OnInternalPaste(): void {
-		if(this.clippedData == null) {
+		if(this.internalClipboardData == null) {
 			return;
 		}
 
-		let subscriber = this.FindActiveClipboardSubscriber();
-		if(subscriber === null) {
+		let activeContext = this.FindActiveContext();
+		if(activeContext === null) {
 			return;
 		}
 
-		subscriber.HandlePaste(this.clippedData);
+		activeContext.HandlePaste(this.internalClipboardData);
 	}
 
-	Subscribe(subscriber: IClipboardSubscriber): void {
-		if(this.ClipboardSubscribers.map(sub => sub.Id).indexOf(subscriber.Id) !== -1) {
+	SubscribeContext(context: IInterfaceContext): void {
+		if(this.InterfaceContexts.map(sub => sub.Id).indexOf(context.Id) !== -1) {
 			throw new Error('Duplicate subscription');
 		}
 
-		this.ClipboardSubscribers.push(subscriber);
+		this.InterfaceContexts.push(context);
 	}
 
 	// what happens if this is called twice asynchronously?
-	Unsubscribe(subscriber: IClipboardSubscriber): void {
-		let index = this.ClipboardSubscribers.indexOf(subscriber);
-		this.ClipboardSubscribers.splice(index, 1);
+	UnsubscribeContext(context: IInterfaceContext): void {
+		let index = this.InterfaceContexts.indexOf(context);
+		this.InterfaceContexts.splice(index, 1);
 	}
 
 	AttemptCopyClipboardData(data: DataTransfer, event?: ClipboardEvent): void {
 		// TODO https://developer.mozilla.org/en-US/docs/Web/Events/paste
 	}
 
-	private FindActiveClipboardSubscriber(): IClipboardSubscriber | null {
+	private FindActiveContext(): IInterfaceContext | null {
+		// currently I require all contexts to have a tab-index to use active element
+		// in the future, I can swap this to have a "Virtual" active context by intercepting all mouse click / tap events and updating the active context accordingly
 		let activeElement = document.activeElement;
 		let activeElementId = activeElement.id;
-		let subscriber = this.ClipboardSubscribers.find(sub => sub.Id === activeElementId);
-		if(subscriber === undefined) {
+		let activeContext = this.InterfaceContexts.find(sub => sub.Id === activeElementId);
+		if(activeContext === undefined) {
 			return null;
 		}
 
-		return subscriber;
+		return activeContext;
 	}
 }
