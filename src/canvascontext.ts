@@ -136,11 +136,9 @@ export class CanvasContext implements IInterfaceContext {
 		// Fires a TON
 	}
 	HandleDragEnter(event: DragEvent): void {
-		console.log('ENTERED YO');
 		event.dataTransfer.dropEffect = DraggableDropEffectsTypes.Move;
 	}
 	HandleDragLeave(event: DragEvent): void {
-		console.log('LEFT YO');
 		event.dataTransfer.dropEffect = DraggableDropEffectsTypes.None;
 	}
 

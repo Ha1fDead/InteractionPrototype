@@ -3,23 +3,24 @@
  */
 export enum DraggableDropEffectsTypes {
 	/**
-	 * no operation is permitted
+	 * Nothing will happen if the dragged element is dropped here
 	 */
 	None = "none",
 	/**
-	 * The "Default" drag and drop
+	 * The "Default" drag and drop, no specification, unknown behavior
 	 */
 	Unitialized = "uninitialized",
 	/**
-	 * Copy only is permitted
+	 * The dragged element will be copied into the drop container
 	 */
 	Copy = "copy",
 	/**
-	 * Move only is permitted
+	 * The dragged element will be moved into the drop container
+	 * (and the previous element should be removed)
 	 */
 	Move = "move",
 	/**
-	 * Link only is permitted
+	 * The dragged element will be linked to the drop container
 	 */
 	Link = "link",
 };
