@@ -1,10 +1,5 @@
 import { IInterfaceContext } from "./interfacecontext.js";
-
-export enum ClipboardDict {
-	Cut = 'cut',
-	Copy = 'copy',
-	Paste = 'paste'
-}
+import { ClipboardDict } from "./clipboard/clipboarddict.js";
 
 // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Recommended_drag_types
 export enum DataTransferTypes {
