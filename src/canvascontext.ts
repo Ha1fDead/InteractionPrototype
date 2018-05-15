@@ -40,8 +40,6 @@ export class CanvasContext implements IInterfaceContext {
 		canvas.ondragend = (event: DragEvent) => { this.HandleDragEnd(event); };
 
 		canvas.ondrag = (event: DragEvent) => { this.HandleDrag(event); };
-		// typescript does not support -- but it is in the mdn tools
-		(<any>canvas).ondragexit = (event: DragEvent) => { this.HandleDragExit(event); };
 		uiManager.SubscribeContext(this);
 		this.Draw();
 	}
@@ -87,16 +85,19 @@ export class CanvasContext implements IInterfaceContext {
 	}
 
 	HandleDragOver(event: DragEvent): void {
+		// prevent the default as this could cause button clicks
+		// also, if the user drops a File into one of these zones the browser will auto-interpret it as a load and change the webpage
+		event.preventDefault();
 		if(!event.dataTransfer.types.includes(DataTransferTypes.Text)) {
 			console.log('text type was not detected, available types: ', event.dataTransfer.types);
 			return;
 		}
 
-		event.preventDefault();
 		event.dataTransfer.dropEffect = DraggableDropEffectsTypes.Move;
 	}
 
 	HandleDrop(event: DragEvent): void {
+		event.preventDefault();
 		if(!DraggableEffectMoveTypes.includes(<DraggableEffectAllowedTypes>event.dataTransfer.effectAllowed)) {
 			return;
 		}
@@ -130,9 +131,6 @@ export class CanvasContext implements IInterfaceContext {
 			this.pasteHistory.pop();
 			this.Draw();
 		}
-	}
-	HandleDragExit(event: DragEvent): void {
-		console.log('drag HandleDragExit', event);
 	}
 	HandleDrag(event: DragEvent): void {
 		// Fires a TON

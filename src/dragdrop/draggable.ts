@@ -1,4 +1,6 @@
-
+/**
+ * Note: MDN defines an "OnDragExit" that is only supported in Firefox
+ */
 export default interface IDragable {
 	/**
 	 * Fired when the user starts dragging an element or text selection. (See Starting a Drag Operation.)
@@ -13,11 +15,6 @@ export default interface IDragable {
 	 * Does not fire from system-level drags (e.g. desktop files)
 	 */
 	HandleDragEnd(event: DragEvent): void;
-
-	/**
-	 * Fired when an element is no longer the drag operation's immediate selection target.
-	 */
-	HandleDragExit(event: DragEvent): void;
 
 	/**
 	 * Fired when an element or text selection is being dragged.
