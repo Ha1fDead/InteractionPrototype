@@ -1,4 +1,4 @@
-import { DragDropDict } from './dragdrop/dragdropdict.js';
+import { DraggableDropEffectsTypes, DraggableEffectAllowedTypes, DraggableEffectMoveTypes } from './dragdrop/dragdropdict.js';
 import { IInterfaceContext } from "./interfacecontext.js";
 import { InterfaceManager } from "./interfacemanager.js";
 import { DataTransferTypes } from './datatransfertypes.js';
@@ -93,11 +93,17 @@ export class CanvasContext implements IInterfaceContext {
 		}
 
 		event.preventDefault();
-		event.dataTransfer.dropEffect = DragDropDict.Move;
+		event.dataTransfer.dropEffect = DraggableDropEffectsTypes.Move;
 	}
 
 	HandleDrop(event: DragEvent): void {
-		//event.preventDefault();
+		if(!DraggableEffectMoveTypes.includes(<DraggableEffectAllowedTypes>event.dataTransfer.effectAllowed)) {
+			return;
+		}
+		if(!event.dataTransfer.types.includes(DataTransferTypes.Text)) {
+			return;
+		}
+
 		this.pasteHistory.push(event.dataTransfer.getData(DataTransferTypes.Text));
 		this.Draw();
 	}
@@ -109,28 +115,35 @@ export class CanvasContext implements IInterfaceContext {
 		}
 
 		event.dataTransfer.setData(DataTransferTypes.Text, this.pasteHistory[this.pasteHistory.length-1]);
-		event.dataTransfer.dropEffect = DragDropDict.Move;
+		event.dataTransfer.dropEffect = DraggableDropEffectsTypes.Move;
 	}
 	HandleDragEnd(event: DragEvent): void {
 		if(this.pasteHistory.length === 0) {
 			return;
 		}
+		if(event.dataTransfer.dropEffect === DraggableEffectAllowedTypes.None) {
+			// event was cancelled
+			return;
+		}
 
-		this.pasteHistory.pop();
-		this.Draw();
+		if(event.dataTransfer.dropEffect === DraggableDropEffectsTypes.Move) {
+			this.pasteHistory.pop();
+			this.Draw();
+		}
 	}
 	HandleDragExit(event: DragEvent): void {
 		console.log('drag HandleDragExit', event);
 	}
 	HandleDrag(event: DragEvent): void {
-		//fires a FUCKTON
-		//console.log('drag HandleDrag', event);
+		// Fires a TON
 	}
 	HandleDragEnter(event: DragEvent): void {
-		console.log('drag HandleDragEnter', event);
+		console.log('ENTERED YO');
+		event.dataTransfer.dropEffect = DraggableDropEffectsTypes.Move;
 	}
 	HandleDragLeave(event: DragEvent): void {
-		console.log('drag HandleDragLeave', event);
+		console.log('LEFT YO');
+		event.dataTransfer.dropEffect = DraggableDropEffectsTypes.None;
 	}
 
 	private Draw(): void {

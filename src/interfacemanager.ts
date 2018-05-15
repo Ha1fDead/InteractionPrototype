@@ -1,6 +1,7 @@
 import { IInterfaceContext } from "./interfacecontext.js";
 import { ClipboardDict } from "./clipboard/clipboarddict.js";
 import { DataTransferTypes } from "./datatransfertypes.js";
+import { DraggableDropEffectsTypes, DraggableEffectAllowedTypes } from "./dragdrop/dragdropdict.js";
 
 
 /**
@@ -20,6 +21,35 @@ export class InterfaceManager {
 	constructor() {
 		this.internalClipboardData = null;
 		this.InterfaceContexts = [];
+		this.init();
+	}
+
+	private init(): void {
+		document.documentElement.oncut = this.OnExternalCut;
+		document.documentElement.onpaste = this.OnExternalPaste;
+		document.documentElement.oncopy = this.OnExternalCopy;
+		window.ondrop = (event: DragEvent) => {
+			this.HandleWindowDrag(event);
+		};
+		window.ondragenter = (event: DragEvent) => {
+			this.HandleWindowDrag(event);
+		};
+		window.ondragover = (event: DragEvent) => {
+			this.HandleWindowDrag(event);
+		};
+	}
+
+	private HandleWindowDrag(event: DragEvent): void {
+		// If the "drop target" is one of our elements, permit it through
+		// This allows us to "global permit", while still restricting external file copies
+		if(this.InterfaceContexts.map(ctx => ctx.Id).includes((<HTMLElement>event.target).id)) {
+			return;
+		}
+		// https://stackoverflow.com/questions/6756583/prevent-browser-from-loading-a-drag-and-dropped-file
+		// prevent someone from dragging a file onto the page and having the browser load it...
+		event.dataTransfer.effectAllowed = DraggableEffectAllowedTypes.None;
+		event.dataTransfer.dropEffect = DraggableDropEffectsTypes.None;
+		event.preventDefault();
 	}
 
 	/**
