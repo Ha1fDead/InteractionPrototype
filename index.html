@@ -9,67 +9,85 @@
 		<main>
 			<canvas id="prototypeCanvas1" tabindex="0" width="400" height="600" style="border: 1px solid black"></canvas>
 			<canvas id="prototypeCanvas2" tabindex="0" width="400" height="600" style="border: 1px solid black"></canvas>
-			<p>shift+click = "internal copy"</p>
-			<p>ctrl+click = "internal cut"</p>
-			<p>alt+click = "internal paste"</p>
-			<table>
-				<thead>
-					<tr>
-						<th></th>
-						<th>(P) Internal</th>
-						<th>(P) External</th>
-						<th>(P) System</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<th>(C) Internal</th>
-						<th>Y</th>
-						<th>Y</th>
-						<th>Y</th>
-					</tr>
-					<tr>
-						<th>(C) External</th>
-						<th>N</th>
-						<th>Y</th>
-						<th>Y</th>
-					</tr>
-					<tr>
-						<th>(C) System</th>
-						<th>N</th>
-						<th>Y</th>
-						<th>Y</th>
-					</tr>
-				</tbody>
-				<tfoot>
-					<tr>
-						<th>(C) = Copy, (P) = Paste</th>
-					</tr>
-				</tfoot>
-			</table>
-			<p>
-				To test this, there are 9 cases (outlined above):
+			<div>
+				<h2>Copy Paste Controls</h2>
+				<p>shift+click = "internal copy"</p>
+				<p>ctrl+click = "internal cut"</p>
+				<p>alt+click = "internal paste"</p>
+				<table>
+					<thead>
+						<tr>
+							<th></th>
+							<th>(P) Internal</th>
+							<th>(P) External</th>
+							<th>(P) System</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<th>(C) Internal</th>
+							<th>Y</th>
+							<th>Y</th>
+							<th>Y</th>
+						</tr>
+						<tr>
+							<th>(C) External</th>
+							<th>N</th>
+							<th>Y</th>
+							<th>Y</th>
+						</tr>
+						<tr>
+							<th>(C) System</th>
+							<th>N</th>
+							<th>Y</th>
+							<th>Y</th>
+						</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<th>(C) = Copy, (P) = Paste</th>
+						</tr>
+					</tfoot>
+				</table>
+				<p>
+					To test this, there are 9 cases (outlined above):
+					<ul>
+						<li>Copy "internally" into the "internal" clipboard (shift+click in the canvas)</li>
+						<ol>
+							<li>Paste "internally" into the clipboard (alt+click in the canvas)</li>
+							<li>Paste "externally" in the browser (anyway) via "ctrl-v"</li>
+							<li>Paste "systemly" outside of the browser (via "ctrl-v"</li>
+						</ol>
+						<li>Copy "externally" (anywhere in the browser via "ctrl-c"</li>
+						<ol>
+							<li>Paste "internally" into the clipboard (alt+click in the canvas) [NOT FUNCTIONING]</li>
+							<li>Paste "externally" in the browser (anyway) via "ctrl-v"</li>
+							<li>Paste "systemly" outside of the browser (via "ctrl-v"</li>
+						</ol>
+						<li>Copy "Systemly" (anywhere in the system via "ctrl-c"</li>
+						<ol>
+							<li>Paste "internally" into the clipboard (alt+click in the canvas) [NOT FUNCTIONING]</li>
+							<li>Paste "externally" in the browser (anyway) via "ctrl-v"</li>
+							<li>Paste "systemly" outside of the browser (via "ctrl-v"</li>
+						</ol>
+					</ul>
+				</p>
+			</div>
+			<div>
+				<h2>Drag n Drop Controls</h2>
 				<ul>
-					<li>Copy "internally" into the "internal" clipboard (shift+click in the canvas)</li>
-					<ol>
-						<li>Paste "internally" into the clipboard (alt+click in the canvas)</li>
-						<li>Paste "externally" in the browser (anyway) via "ctrl-v"</li>
-						<li>Paste "systemly" outside of the browser (via "ctrl-v"</li>
-					</ol>
-					<li>Copy "externally" (anywhere in the browser via "ctrl-c"</li>
-					<ol>
-						<li>Paste "internally" into the clipboard (alt+click in the canvas) [NOT FUNCTIONING]</li>
-						<li>Paste "externally" in the browser (anyway) via "ctrl-v"</li>
-						<li>Paste "systemly" outside of the browser (via "ctrl-v"</li>
-					</ol>
-					<li>Copy "Systemly" (anywhere in the system via "ctrl-c"</li>
-					<ol>
-						<li>Paste "internally" into the clipboard (alt+click in the canvas) [NOT FUNCTIONING]</li>
-						<li>Paste "externally" in the browser (anyway) via "ctrl-v"</li>
-						<li>Paste "systemly" outside of the browser (via "ctrl-v"</li>
-					</ol>
+					<li>Element outside of Canvas inside of Canvas</li>
+					<li>Element inside of Canvas to element outside of Canvas</li>
+					<li>Element inside of Canvas inside of a different Canvas</li>
+					<li>Element inside of Canvas inside of the same Canvas</li>
 				</ul>
-			</p>
+			</div>
+			<div draggable="true" id="drag1">
+				I'm Draggable!
+			</div>
+			<div draggable="true" id="drag2">
+				I'm Also Draggable!
+			</div>
 			<p>some paragraph</p>
 			<p>other paragraph</p>
 			<input type="text" value="some text element"/>

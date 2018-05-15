@@ -262,6 +262,31 @@ export class ClipboardManager {
 		activeContext.HandlePaste(this.internalClipboardData);
 	}
 
+	/**
+	 * Fired when an element or text selection is being dragged over a valid drop target (every few hundred milliseconds).
+	 * 
+	 * Thing about drag and drop is there is no binding necessary with the browser, except 
+	 */
+	HandleDragOver(event: DragEvent): void {
+		let activeContext = this.FindActiveContext();
+		if(activeContext === null) {
+			return;
+		}
+
+		activeContext.HandleDragOver(event);
+	}
+	/**
+	 * Fired when an element or text selection is dropped on a valid drop target.
+	 */
+	HandleDrop(event: DragEvent): void {
+		let activeContext = this.FindActiveContext();
+		if(activeContext === null) {
+			return;
+		}
+
+		activeContext.HandleDrop(event);
+	}
+
 	SubscribeContext(context: IInterfaceContext): void {
 		if(this.InterfaceContexts.map(sub => sub.Id).indexOf(context.Id) !== -1) {
 			throw new Error('Duplicate subscription');

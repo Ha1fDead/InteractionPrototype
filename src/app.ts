@@ -1,3 +1,4 @@
+import { DragDropDict } from './dragdrop/dragdropdict.js';
 import { ClipboardManager } from "./clipboard.js";
 import { CanvasContext } from "./canvascontext.js";
 
@@ -21,8 +22,10 @@ class App {
 				this.ClipboardManager.OnInternalPaste();
 			}
 		};
-		canvasElement = <HTMLCanvasElement>document.getElementById('prototypeCanvas2');
-		canvasElement.onmousedown = (ev: MouseEvent) => {
+		canvasElement.ondrop = canvasListener1.HandleDrop;
+		canvasElement.ondragover = canvasListener1.HandleDragOver;
+		let canvasElement2 = <HTMLCanvasElement>document.getElementById('prototypeCanvas2');
+		canvasElement2.onmousedown = (ev: MouseEvent) => {
 			if(ev.shiftKey) {
 				this.ClipboardManager.OnInternalCopy();
 			}
@@ -33,6 +36,17 @@ class App {
 				this.ClipboardManager.OnInternalPaste();
 			}
 		};
+		canvasElement2.ondrop = canvasListener2.HandleDrop;
+		canvasElement2.ondragover = canvasListener2.HandleDragOver;
+
+		let dragElement1 = <HTMLElement>document.getElementById('drag1');
+		dragElement1.ondragstart = (dragEvent: DragEvent) => {
+			dragEvent.dataTransfer.dropEffect = DragDropDict.Move;
+			dragEvent.dataTransfer.setData("text/plain", (<HTMLElement>dragEvent.target).id);
+			dragEvent.dataTransfer.setData("text/html", "<p>Example paragraph</p>");
+			dragEvent.dataTransfer.setData("text/uri-list", "http://developer.mozilla.org");
+		};
+		let dragElement2 = <HTMLElement>document.getElementById('drag2');
 
 		document.documentElement.oncut = this.ClipboardManager.OnExternalCut;
 		document.documentElement.onpaste = this.ClipboardManager.OnExternalPaste;

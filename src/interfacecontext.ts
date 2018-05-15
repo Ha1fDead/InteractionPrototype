@@ -1,3 +1,5 @@
+import IDroppable from "./dragdrop/droppable.js";
+
 /**
  * Interface Contexts are used to bind DOM functionality into virtual elements, such as:
  * 
@@ -13,7 +15,7 @@
  * 1. Character Sheet (multiple sheets can be loaded at one time)
  * 2. Canvas / Scene (could potentially have multiple scenes open at any time)
  */
-export interface IInterfaceContext {
+export interface IInterfaceContext extends IDroppable {
 	/**
 	 * The Id of the DOM element that you want to bind the InterfaceContext to
 	 */

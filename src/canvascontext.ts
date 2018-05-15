@@ -1,3 +1,4 @@
+import { DragDropDict } from './dragdrop/dragdropdict.js';
 import { IInterfaceContext } from "./interfacecontext.js";
 import { DataTransferTypes } from "./clipboard.js";
 
@@ -46,5 +47,15 @@ export class CanvasContext implements IInterfaceContext {
 			canvasCtx.fillText(paste, 50, idx * 50, 40);
 			idx++;
 		}
+	}
+
+	HandleDragOver(event: DragEvent): void {
+		event.preventDefault();
+		event.dataTransfer.dropEffect = DragDropDict.Move;
+		console.log('drag over event', event);
+	}
+	HandleDrop(event: DragEvent): void {
+		event.preventDefault();
+		console.log('drop event', event);
 	}
 }
