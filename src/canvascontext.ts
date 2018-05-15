@@ -1,11 +1,17 @@
 import { DragDropDict } from './dragdrop/dragdropdict.js';
 import { IInterfaceContext } from "./interfacecontext.js";
-import { InterfaceManager } from "./interfacemanager";
+import { InterfaceManager } from "./interfacemanager.js";
 import { DataTransferTypes } from './datatransfertypes.js';
 
 export class CanvasContext implements IInterfaceContext {
 	private pasteHistory: string[] = [];
 	constructor(public Id: string, uiManager: InterfaceManager) {
+		this.pasteHistory.push("this line AAAA");
+		this.pasteHistory.push("this line BBBB");
+		this.pasteHistory.push("this line CCCC");
+		this.pasteHistory.push("this line DDDD");
+		this.pasteHistory.push("this line EEEE");
+
 		let canvas = <HTMLCanvasElement | null>document.getElementById(Id);
 		if(canvas === null) {
 			throw new Error('Canvas Id could not be bound to the CanvasContext component');
@@ -37,6 +43,7 @@ export class CanvasContext implements IInterfaceContext {
 		// typescript does not support -- but it is in the mdn tools
 		(<any>canvas).ondragexit = (event: DragEvent) => { this.HandleDragExit(event); };
 		uiManager.SubscribeContext(this);
+		this.Draw();
 	}
 
     /**
@@ -89,16 +96,28 @@ export class CanvasContext implements IInterfaceContext {
 	}
 
 	HandleDrop(event: DragEvent): void {
-		event.preventDefault();
+		//event.preventDefault();
 		this.pasteHistory.push(event.dataTransfer.getData(DataTransferTypes.Text));
+		console.log('dropped :)');
 		this.Draw();
 	}
 
 	HandleDragStart(event: DragEvent): void {
-		console.log('drag start', event);
+		if(this.pasteHistory.length === 0) {
+			// can't drag
+			event.preventDefault();
+		}
+
+		event.dataTransfer.setData(DataTransferTypes.Text, this.pasteHistory[this.pasteHistory.length-1]);
+		event.dataTransfer.dropEffect = DragDropDict.Move;
 	}
 	HandleDragEnd(event: DragEvent): void {
-		console.log('HandleDragEnd', event);
+		if(this.pasteHistory.length === 0) {
+			return;
+		}
+
+		this.pasteHistory.pop();
+		this.Draw();
 	}
 	HandleDragExit(event: DragEvent): void {
 		console.log('drag HandleDragExit', event);
@@ -119,9 +138,9 @@ export class CanvasContext implements IInterfaceContext {
 		let canvas = <HTMLCanvasElement>document.getElementById(this.Id);
 		let canvasCtx = <CanvasRenderingContext2D>canvas.getContext("2d");
 		canvasCtx.clearRect(0, 0, 400, 600);
-		let idx = 0;
+		let idx = 1;
 		for (let paste of this.pasteHistory) {
-			canvasCtx.fillText(paste, 50, idx * 50, 40);
+			canvasCtx.fillText(paste, 100, idx * 50, 40);
 			idx++;
 		}
 	}

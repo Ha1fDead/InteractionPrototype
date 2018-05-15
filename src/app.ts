@@ -1,5 +1,5 @@
 import { DragDropDict } from './dragdrop/dragdropdict.js';
-import { InterfaceManager } from "./interfacemanager";
+import { InterfaceManager } from "./interfacemanager.js";
 import { CanvasContext } from "./canvascontext.js";
 
 class App {
