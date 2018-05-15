@@ -18,6 +18,8 @@ Code\Valhalla\Prototypes\Clipboard> openssl req -newkey rsa:2048 -new -nodes -x5
 
 ## Behaviors
 
+If you attempt to "copy" empty data, then the clipboard should not copy "empty" and preserve the previous contents.
+
 Cut has a variety of implementations:
 
 1. In spreadsheet editors, "Cutting" marks the data for cut and then deletes it AFTER it is pasted. This is undone by hitting the 'esc' key, copying other data, or cutting other data. Ctrl-z in this workflow does nothing until AFTER the paste/delete events fire

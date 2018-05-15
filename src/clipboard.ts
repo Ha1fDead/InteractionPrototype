@@ -93,7 +93,11 @@ export class ClipboardManager {
 		}
 
 		event.preventDefault();
-		this.internalClipboardData = activeContext.HandleCopy();
+		let ctxCopiedData = activeContext.HandleCut();
+		if(ctxCopiedData.items.length <= 0) {
+			return;
+		}
+		this.internalClipboardData = ctxCopiedData;
 		this.AttemptCopyClipboardData(this.internalClipboardData, event);
 	}
 
@@ -128,7 +132,11 @@ export class ClipboardManager {
 			return;
 		}
 
-		this.internalClipboardData = activeContext.HandleCopy();
+		let ctxCopiedData = activeContext.HandleCut();
+		if(ctxCopiedData.items.length <= 0) {
+			return;
+		}
+		this.internalClipboardData = ctxCopiedData;
 		this.AttemptCopyClipboardData(this.internalClipboardData);
 	}
 
@@ -163,7 +171,11 @@ export class ClipboardManager {
 		}
 		
 		event.preventDefault();
-		this.internalClipboardData = activeContext.HandleCut();
+		let ctxCutData = activeContext.HandleCut();
+		if(ctxCutData.items.length <= 0) {
+			return;
+		}
+		this.internalClipboardData = ctxCutData;
 		this.AttemptCopyClipboardData(this.internalClipboardData, event);
 	}
 
@@ -186,7 +198,11 @@ export class ClipboardManager {
 			return;
 		}
 
-		this.internalClipboardData = activeContext.HandleCut();
+		let ctxCutData = activeContext.HandleCut();
+		if(ctxCutData.items.length <= 0) {
+			return;
+		}
+		this.internalClipboardData = ctxCutData;
 		this.AttemptCopyClipboardData(this.internalClipboardData);
 	}
 
