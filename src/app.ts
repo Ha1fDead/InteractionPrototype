@@ -22,8 +22,8 @@ class App {
 				this.ClipboardManager.OnInternalPaste();
 			}
 		};
-		canvasElement.ondrop = canvasListener1.HandleDrop;
-		canvasElement.ondragover = canvasListener1.HandleDragOver;
+		canvasElement.ondrop = (event: DragEvent) => { canvasListener1.HandleDrop(event); };
+		canvasElement.ondragover = (event: DragEvent) => { canvasListener1.HandleDragOver(event); };
 		let canvasElement2 = <HTMLCanvasElement>document.getElementById('prototypeCanvas2');
 		canvasElement2.onmousedown = (ev: MouseEvent) => {
 			if(ev.shiftKey) {
@@ -36,8 +36,8 @@ class App {
 				this.ClipboardManager.OnInternalPaste();
 			}
 		};
-		canvasElement2.ondrop = canvasListener2.HandleDrop;
-		canvasElement2.ondragover = canvasListener2.HandleDragOver;
+		canvasElement2.ondrop = (event: DragEvent) => { canvasListener2.HandleDrop(event); };
+		canvasElement2.ondragover = (event: DragEvent) => { canvasListener2.HandleDragOver(event); };
 
 		let dragElement1 = <HTMLElement>document.getElementById('drag1');
 		dragElement1.ondragstart = (dragEvent: DragEvent) => {

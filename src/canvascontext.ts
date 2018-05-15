@@ -15,7 +15,9 @@ export class CanvasContext implements IInterfaceContext {
      */
 	HandleCut(): DataTransfer {
 		let data = new DataTransfer();
-		data.setData(DataTransferTypes.Text, 'WOH SOME TEXT HERE');
+		let lastItem = <string>this.pasteHistory.pop();
+		data.setData(DataTransferTypes.Text, lastItem);
+		this.Draw();
 		return data;
 	}
 
@@ -26,7 +28,7 @@ export class CanvasContext implements IInterfaceContext {
      */
 	HandleCopy(): DataTransfer {
 		let data = new DataTransfer();
-		data.setData(DataTransferTypes.Text, 'WOH SOME TEXT HERE');
+		data.setData(DataTransferTypes.Text, this.pasteHistory[this.pasteHistory.length-1]);
 		return data;
 	}
 
@@ -38,6 +40,24 @@ export class CanvasContext implements IInterfaceContext {
      */
 	HandlePaste(data: DataTransfer): void {
 		this.pasteHistory.push(data.getData(DataTransferTypes.Text));
+		this.Draw();
+	}
+
+	HandleDragOver(event: DragEvent): void {
+		if(!event.dataTransfer.types.includes(DataTransferTypes.Text)) {
+			return;
+		}
+
+		event.preventDefault();
+		event.dataTransfer.dropEffect = DragDropDict.Move;
+	}
+	HandleDrop(event: DragEvent): void {
+		event.preventDefault();
+		this.pasteHistory.push(event.dataTransfer.getData(DataTransferTypes.Text));
+		this.Draw();
+	}
+
+	private Draw(): void {
 		// quick and dirty paste demonstration
 		let canvas = <HTMLCanvasElement>document.getElementById(this.Id);
 		let canvasCtx = <CanvasRenderingContext2D>canvas.getContext("2d");
@@ -47,15 +67,5 @@ export class CanvasContext implements IInterfaceContext {
 			canvasCtx.fillText(paste, 50, idx * 50, 40);
 			idx++;
 		}
-	}
-
-	HandleDragOver(event: DragEvent): void {
-		event.preventDefault();
-		event.dataTransfer.dropEffect = DragDropDict.Move;
-		console.log('drag over event', event);
-	}
-	HandleDrop(event: DragEvent): void {
-		event.preventDefault();
-		console.log('drop event', event);
 	}
 }
