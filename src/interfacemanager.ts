@@ -1,10 +1,7 @@
 import { IInterfaceContext } from "./interfacecontext.js";
 import { ClipboardDict } from "./clipboard/clipboarddict.js";
+import { DataTransferTypes } from "./datatransfertypes.js";
 
-// https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Recommended_drag_types
-export enum DataTransferTypes {
-	Text = 'text/plain'
-}
 
 /**
  * There should only ever be a single 'Clipboard' object in the entire application. Unlike undo/redo, the clipboard should always reference the same data.
@@ -16,7 +13,7 @@ export enum DataTransferTypes {
  * There is some nuance as we cannot completely control the browser's clipboard without explicit user permission. This manager makes interacting with the clipboard easier by abstracting
  * some of the permission nuance. 
  */
-export class ClipboardManager {
+export class InterfaceManager {
 	private internalClipboardData: DataTransfer | null;
 	private InterfaceContexts: IInterfaceContext[];
 
@@ -257,31 +254,6 @@ export class ClipboardManager {
 		}
 
 		activeContext.HandlePaste(this.internalClipboardData);
-	}
-
-	/**
-	 * Fired when an element or text selection is being dragged over a valid drop target (every few hundred milliseconds).
-	 * 
-	 * Thing about drag and drop is there is no binding necessary with the browser, except 
-	 */
-	HandleDragOver(event: DragEvent): void {
-		let activeContext = this.FindActiveContext();
-		if(activeContext === null) {
-			return;
-		}
-
-		activeContext.HandleDragOver(event);
-	}
-	/**
-	 * Fired when an element or text selection is dropped on a valid drop target.
-	 */
-	HandleDrop(event: DragEvent): void {
-		let activeContext = this.FindActiveContext();
-		if(activeContext === null) {
-			return;
-		}
-
-		activeContext.HandleDrop(event);
 	}
 
 	SubscribeContext(context: IInterfaceContext): void {

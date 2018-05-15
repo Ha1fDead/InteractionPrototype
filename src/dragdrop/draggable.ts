@@ -25,18 +25,4 @@ export default interface IDragable {
 	 * Potentially continuous, and fires every "couple hundred of MS"
 	 */
 	HandleDrag(event: DragEvent): void;
-
-	/**
-	 * Fired when a dragged element or text selection enters a valid drop target.
-	 * 
-	 * Use this to style either the element being dragged (event source) or the drop target (event target)
-	 */
-	HandleDragEnter(event: DragEvent): void;
-	
-	/**
-	 * Fired when a dragged element or text selection leaves a valid drop target.
-	 * 
-	 * Use this to style either the element being dragged (event source) or the drop target (event target)
-	 */
-	HandleDragLeave(event: DragEvent): void;
 }

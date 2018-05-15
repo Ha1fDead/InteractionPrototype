@@ -1,11 +1,42 @@
 import { DragDropDict } from './dragdrop/dragdropdict.js';
 import { IInterfaceContext } from "./interfacecontext.js";
-import { DataTransferTypes } from "./clipboard.js";
+import { InterfaceManager } from "./interfacemanager";
+import { DataTransferTypes } from './datatransfertypes.js';
 
 export class CanvasContext implements IInterfaceContext {
 	private pasteHistory: string[] = [];
-	constructor(public Id: string) {
+	constructor(public Id: string, uiManager: InterfaceManager) {
+		let canvas = <HTMLCanvasElement | null>document.getElementById(Id);
+		if(canvas === null) {
+			throw new Error('Canvas Id could not be bound to the CanvasContext component');
+		}
+		
+		canvas.onmousedown = (ev: MouseEvent) => {
+			if(ev.shiftKey) {
+				uiManager.OnInternalCopy();
+			}
+			if(ev.ctrlKey) {
+				uiManager.OnInternalCut();
+			}
+			if(ev.altKey) {
+				uiManager.OnInternalPaste();
+			}
+		};
 
+		// drop controls
+		canvas.ondrop = (event: DragEvent) => { this.HandleDrop(event); };
+		canvas.ondragover = (event: DragEvent) => { this.HandleDragOver(event); };
+
+		canvas.ondragenter = (event: DragEvent) => { this.HandleDragEnter(event); };
+		canvas.ondragleave = (event: DragEvent) => { this.HandleDragLeave(event); };
+
+		canvas.ondragstart = (event: DragEvent) => { this.HandleDragStart(event); };
+		canvas.ondragend = (event: DragEvent) => { this.HandleDragEnd(event); };
+
+		canvas.ondrag = (event: DragEvent) => { this.HandleDrag(event); };
+		// typescript does not support -- but it is in the mdn tools
+		(<any>canvas).ondragexit = (event: DragEvent) => { this.HandleDragExit(event); };
+		uiManager.SubscribeContext(this);
 	}
 
     /**
@@ -15,9 +46,12 @@ export class CanvasContext implements IInterfaceContext {
      */
 	HandleCut(): DataTransfer {
 		let data = new DataTransfer();
-		let lastItem = <string>this.pasteHistory.pop();
-		data.setData(DataTransferTypes.Text, lastItem);
-		this.Draw();
+		if(this.pasteHistory.length > 0) {
+			let lastItem = <string>this.pasteHistory.pop();
+			data.setData(DataTransferTypes.Text, lastItem);
+			this.Draw();
+		}
+		
 		return data;
 	}
 
@@ -28,7 +62,9 @@ export class CanvasContext implements IInterfaceContext {
      */
 	HandleCopy(): DataTransfer {
 		let data = new DataTransfer();
-		data.setData(DataTransferTypes.Text, this.pasteHistory[this.pasteHistory.length-1]);
+		if(this.pasteHistory.length > 0) {
+			data.setData(DataTransferTypes.Text, this.pasteHistory[this.pasteHistory.length-1]);
+		}
 		return data;
 	}
 
@@ -51,10 +87,31 @@ export class CanvasContext implements IInterfaceContext {
 		event.preventDefault();
 		event.dataTransfer.dropEffect = DragDropDict.Move;
 	}
+
 	HandleDrop(event: DragEvent): void {
 		event.preventDefault();
 		this.pasteHistory.push(event.dataTransfer.getData(DataTransferTypes.Text));
 		this.Draw();
+	}
+
+	HandleDragStart(event: DragEvent): void {
+		console.log('drag start', event);
+	}
+	HandleDragEnd(event: DragEvent): void {
+		console.log('HandleDragEnd', event);
+	}
+	HandleDragExit(event: DragEvent): void {
+		console.log('drag HandleDragExit', event);
+	}
+	HandleDrag(event: DragEvent): void {
+		//fires a FUCKTON
+		//console.log('drag HandleDrag', event);
+	}
+	HandleDragEnter(event: DragEvent): void {
+		console.log('drag HandleDragEnter', event);
+	}
+	HandleDragLeave(event: DragEvent): void {
+		console.log('drag HandleDragLeave', event);
 	}
 
 	private Draw(): void {
