@@ -21,6 +21,19 @@ class App {
 		document.documentElement.oncut = this.InterfaceManager.OnExternalCut;
 		document.documentElement.onpaste = this.InterfaceManager.OnExternalPaste;
 		document.documentElement.oncopy = this.InterfaceManager.OnExternalCopy;
+		window.ondrop = (event: DragEvent) => {
+			// https://stackoverflow.com/questions/6756583/prevent-browser-from-loading-a-drag-and-dropped-file
+			// prevent someone from dragging a file onto the page and having the browser load it...
+			event.preventDefault();
+		};
+		window.ondragenter = (event: DragEvent) => {
+			// prevent someone from dragging a file onto the page and having the browser load it...
+			event.preventDefault();
+		};
+		window.ondragover = (event: DragEvent) => {
+			// prevent someone from dragging a file onto the page and having the browser load it...
+			event.preventDefault();
+		};
 	}
 }
 

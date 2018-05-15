@@ -88,6 +88,7 @@ export class CanvasContext implements IInterfaceContext {
 
 	HandleDragOver(event: DragEvent): void {
 		if(!event.dataTransfer.types.includes(DataTransferTypes.Text)) {
+			console.log('text type was not detected, available types: ', event.dataTransfer.types);
 			return;
 		}
 
@@ -98,7 +99,6 @@ export class CanvasContext implements IInterfaceContext {
 	HandleDrop(event: DragEvent): void {
 		//event.preventDefault();
 		this.pasteHistory.push(event.dataTransfer.getData(DataTransferTypes.Text));
-		console.log('dropped :)');
 		this.Draw();
 	}
 
@@ -140,7 +140,7 @@ export class CanvasContext implements IInterfaceContext {
 		canvasCtx.clearRect(0, 0, 400, 600);
 		let idx = 1;
 		for (let paste of this.pasteHistory) {
-			canvasCtx.fillText(paste, 100, idx * 50, 40);
+			canvasCtx.fillText(paste, 100, idx * 50, 300);
 			idx++;
 		}
 	}

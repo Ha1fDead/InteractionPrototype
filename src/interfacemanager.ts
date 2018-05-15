@@ -76,7 +76,7 @@ export class InterfaceManager {
 		}
 
 		event.preventDefault();
-		let ctxCopiedData = activeContext.HandleCut();
+		let ctxCopiedData = activeContext.HandleCopy();
 		if(ctxCopiedData.items.length <= 0) {
 			return;
 		}
@@ -115,7 +115,7 @@ export class InterfaceManager {
 			return;
 		}
 
-		let ctxCopiedData = activeContext.HandleCut();
+		let ctxCopiedData = activeContext.HandleCopy();
 		if(ctxCopiedData.items.length <= 0) {
 			return;
 		}
