@@ -20,9 +20,6 @@ export class ClipboardManager {
 	private internalClipboardData: DataTransfer | null;
 	private InterfaceContexts: IInterfaceContext[];
 
-	// These functions are meant to be passed by reference, so capture 'this'
-	private self = this;
-
 	constructor() {
 		this.internalClipboardData = null;
 		this.InterfaceContexts = [];

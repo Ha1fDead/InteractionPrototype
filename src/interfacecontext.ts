@@ -1,4 +1,7 @@
 import IDroppable from "./dragdrop/droppable.js";
+import IDragable from "./dragdrop/draggable.js";
+import { ICopyable } from "./clipboard/copyable.js";
+import IPasteable from "./clipboard/pasteable.js";
 
 /**
  * Interface Contexts are used to bind DOM functionality into virtual elements, such as:
@@ -15,31 +18,9 @@ import IDroppable from "./dragdrop/droppable.js";
  * 1. Character Sheet (multiple sheets can be loaded at one time)
  * 2. Canvas / Scene (could potentially have multiple scenes open at any time)
  */
-export interface IInterfaceContext extends IDroppable {
+export interface IInterfaceContext extends IDroppable, IDragable, ICopyable, IPasteable {
 	/**
 	 * The Id of the DOM element that you want to bind the InterfaceContext to
 	 */
 	Id: string;
-
-	/**
-	 * The context's custom handled 'Cut' operation
-	 * 
-	 * This method should REMOVE the cut item via a command (so the user can undo it) and return a DataTransfer object representing the data entirely so it can be replicated
-	 */
-	HandleCut(): DataTransfer;
-
-	/**
-	 * The context's custom handled 'Copy' operation
-	 * 
-	 * This method should make a copy of the data in a DataTransfer object so it can be replicated at-will from the user
-	 */
-	HandleCopy(): DataTransfer;
-
-	/**
-	 * The context's custom handled 'Paste' operation
-	 * 
-	 * This method should build a "Paste Event" into the command stack so the user can undo this.
-	 * @param data to be pasted
-	 */
-	HandlePaste(data: DataTransfer): void;
 }

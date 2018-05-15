@@ -1,11 +1,6 @@
-# Clipboard Prototype
+# DataTransfer API Prototypes
 
-This is a prototype for interacting with the Clipboard in HTML5. Prototype should include:
-
-1. Synchronous Clipboard Api
-2. Asynchronous Clipboard Api
-3. document.Exec
-4. intercepting raw `ctrl-c` and `ctrl-v` commands
+Hey!
 
 ## Setting Up Project
 
@@ -16,7 +11,29 @@ This is a prototype for interacting with the Clipboard in HTML5. Prototype shoul
 Code\Valhalla\Prototypes\Clipboard> openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem -config .\openssl.conf
 ```
 
-## Behaviors
+## Draggable Prototypes
+
+Should I consider using Shopify's [Draggable](https://github.com/Shopify/draggable#documentation)?
+
+Example Drag Interactions:
+
+- drag an item from inventory into canvas
+- drag an item from canvas into inventory
+- drag an actor from canvas into play space
+- move an actor within the canvas from one tile to another
+- drag a texture onto a tile
+- drag an object onto a table or surface
+
+## Clipboard Prototype
+
+This is a prototype for interacting with the Clipboard in HTML5. Prototype should include:
+
+1. Synchronous Clipboard Api
+2. Asynchronous Clipboard Api
+3. document.Exec
+4. intercepting raw `ctrl-c` and `ctrl-v` commands
+
+### Clipboard Behaviors
 
 If you attempt to "copy" empty data, then the clipboard should not copy "empty" and preserve the previous contents.
 
@@ -60,3 +77,4 @@ Reasons for needing to figure this out:
 - [Google Support](https://developers.google.com/web/updates/2018/03/clipboardapi)
 - [MDN OnPaste Documentation](https://developer.mozilla.org/en-US/docs/Web/Events/paste)
 - [Javascript HTML clipboard library](https://github.com/zenorocha/clipboard.js)
+- [MDN Draggable Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API)
