@@ -9,6 +9,8 @@ import ClipboardManager from './clipboard/clipboardmanager.js';
 
 export class CanvasContext implements IInterfaceContext {
 	private pasteHistory: string[] = [];
+	private selectedIndex: number | null = null;
+
 	constructor(public Id: string, uiManager: InterfaceManager, private clipboardManager: ClipboardManager, private commandManager: ICommandStack) {
 		this.pasteHistory.push("this line AAAA");
 		this.pasteHistory.push("this line BBBB");
@@ -31,7 +33,18 @@ export class CanvasContext implements IInterfaceContext {
 			if(ev.altKey) {
 				clipboardManager.OnInternalPaste();
 			}
+
+			let potentialIndex = Math.floor(ev.y / 50);
+			if(potentialIndex < this.pasteHistory.length) {
+				this.selectedIndex = potentialIndex;
+			}
 		};
+
+		// commented because I have to preserve selectedIndex for cleaning up the drop operation
+		// non-prototype implementation will need to rely on more complex rendering solutions ("IsSelected", "IsBeingDragged", etc.)
+		// canvas.onblur = (event: Event) => {
+		// 	this.selectedIndex = null;
+		// };
 
 		// drop controls
 		canvas.ondrop = (event: DragEvent) => { this.HandleDrop(event); };
@@ -68,9 +81,9 @@ export class CanvasContext implements IInterfaceContext {
      */
 	HandleCut(): DataTransfer {
 		let data = new DataTransfer();
-		if(this.pasteHistory.length > 0) {
-			let text = this.pasteHistory[this.pasteHistory.length-1];
-			let removeTextCommand = new RemoveTextCommand(this, this.pasteHistory.length-1);
+		if(this.selectedIndex !== null) {
+			let text = this.pasteHistory[this.selectedIndex];
+			let removeTextCommand = new RemoveTextCommand(this, this.selectedIndex);
 			this.commandManager.PerformAction(removeTextCommand, false);
 			data.setData(DataTransferTypes.Text, text);
 		}
@@ -85,8 +98,8 @@ export class CanvasContext implements IInterfaceContext {
      */
 	HandleCopy(): DataTransfer {
 		let data = new DataTransfer();
-		if(this.pasteHistory.length > 0) {
-			data.setData(DataTransferTypes.Text, this.GetText(this.pasteHistory.length-1));
+		if(this.selectedIndex !== null) {
+			data.setData(DataTransferTypes.Text, this.GetText(this.selectedIndex));
 		}
 		return data;
 	}
@@ -120,7 +133,8 @@ export class CanvasContext implements IInterfaceContext {
 			return;
 		}
 
-		let addTextCommand = new AddTextCommand(this, event.dataTransfer.getData(DataTransferTypes.Text), this.pasteHistory.length);
+		let dropIndex = this.selectedIndex === null ? this.pasteHistory.length : this.selectedIndex;
+		let addTextCommand = new AddTextCommand(this, event.dataTransfer.getData(DataTransferTypes.Text), dropIndex);
 		this.commandManager.PerformAction(addTextCommand, false);
 	}
 
@@ -130,12 +144,14 @@ export class CanvasContext implements IInterfaceContext {
 			event.preventDefault();
 		}
 
-		event.dataTransfer.setData(DataTransferTypes.Text, this.GetText(this.pasteHistory.length-1));
+		let indexToUse = this.selectedIndex === null ? this.pasteHistory.length - 1 : this.selectedIndex;
+
+		event.dataTransfer.setData(DataTransferTypes.Text, this.GetText(indexToUse));
 		event.dataTransfer.effectAllowed = DraggableEffectAllowedTypes.All;
 		event.dataTransfer.dropEffect = DraggableDropEffectsTypes.Move;
 	}
 	HandleDragEnd(event: DragEvent): void {
-		if(this.pasteHistory.length === 0) {
+		if(this.selectedIndex === null) {
 			return;
 		}
 		if(event.dataTransfer.dropEffect === DraggableEffectAllowedTypes.None) {
@@ -144,7 +160,7 @@ export class CanvasContext implements IInterfaceContext {
 		}
 
 		if(event.dataTransfer.dropEffect === DraggableDropEffectsTypes.Move) {
-			let removeTextCommand = new RemoveTextCommand(this, this.pasteHistory.length-1);
+			let removeTextCommand = new RemoveTextCommand(this, this.selectedIndex);
 			this.commandManager.PerformAction(removeTextCommand, true);
 		}
 	}
@@ -167,11 +183,15 @@ export class CanvasContext implements IInterfaceContext {
 		// quick and dirty paste demonstration
 		let canvas = <HTMLCanvasElement>document.getElementById(this.Id);
 		let canvasCtx = <CanvasRenderingContext2D>canvas.getContext("2d");
+		canvasCtx.fillStyle = "white";
 		canvasCtx.clearRect(0, 0, 400, 600);
-		let idx = 1;
-		for (let paste of this.pasteHistory) {
-			canvasCtx.fillText(paste, 100, idx * 50, 300);
-			idx++;
+		for(let x = 0; x < this.pasteHistory.length; x++) {
+			if(this.selectedIndex !== null && this.selectedIndex === x) {
+				canvasCtx.fillStyle = "green";
+				canvasCtx.fillRect(100, (x+1) * 50 - 25, 300, 25);
+			}
+			canvasCtx.fillStyle = "black";
+			canvasCtx.fillText(this.pasteHistory[x], 100, (x+1) * 50, 300);
 		}
 
 		window.requestAnimationFrame((timestamp: number) => { this.Draw() });
