@@ -5,10 +5,11 @@ import { InterfaceManager } from "./interfacemanager.js";
 import { DataTransferTypes } from './datatransfertypes.js';
 import RemoveTextCommand from './commands/removetextcommand.js';
 import AddTextCommand from './commands/addtextcommand.js';
+import ClipboardManager from './clipboard/clipboardmanager.js';
 
 export class CanvasContext implements IInterfaceContext {
 	private pasteHistory: string[] = [];
-	constructor(public Id: string, uiManager: InterfaceManager, private commandManager: ICommandStack) {
+	constructor(public Id: string, uiManager: InterfaceManager, private clipboardManager: ClipboardManager, private commandManager: ICommandStack) {
 		this.pasteHistory.push("this line AAAA");
 		this.pasteHistory.push("this line BBBB");
 		this.pasteHistory.push("this line CCCC");
@@ -22,13 +23,13 @@ export class CanvasContext implements IInterfaceContext {
 		
 		canvas.onmousedown = (ev: MouseEvent) => {
 			if(ev.shiftKey) {
-				uiManager.OnInternalCopy();
+				clipboardManager.OnInternalCopy();
 			}
 			if(ev.ctrlKey) {
-				uiManager.OnInternalCut();
+				clipboardManager.OnInternalCut();
 			}
 			if(ev.altKey) {
-				uiManager.OnInternalPaste();
+				clipboardManager.OnInternalPaste();
 			}
 		};
 

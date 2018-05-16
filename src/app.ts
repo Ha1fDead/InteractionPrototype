@@ -2,19 +2,22 @@ import { ICommandStack, CommandStack } from './commands/commandmanager.js';
 import { DraggableEffectAllowedTypes } from './dragdrop/dragdropdict.js';
 import { InterfaceManager } from "./interfacemanager.js";
 import { CanvasContext } from "./canvascontext.js";
+import ClipboardManager from './clipboard/clipboardmanager.js';
 
 class App {
 	private CommandManager: ICommandStack;
 	private InterfaceManager: InterfaceManager;
+	private ClipboardManager: ClipboardManager;
 
 	constructor() {
 		this.CommandManager = new CommandStack();
 		this.InterfaceManager = new InterfaceManager(this.CommandManager);
+		this.ClipboardManager = new ClipboardManager(this.InterfaceManager);
 	}
 
 	Run(): void {
-		let canvasListener1 = new CanvasContext('prototypeCanvas1', this.InterfaceManager, this.CommandManager);
-		let canvasListener2 = new CanvasContext('prototypeCanvas2', this.InterfaceManager, this.CommandManager);
+		let canvasListener1 = new CanvasContext('prototypeCanvas1', this.InterfaceManager, this.ClipboardManager, this.CommandManager);
+		let canvasListener2 = new CanvasContext('prototypeCanvas2', this.InterfaceManager, this.ClipboardManager, this.CommandManager);
 
 		let dragElement1 = <HTMLElement>document.getElementById('drag1');
 		dragElement1.ondragstart = (dragEvent: DragEvent) => {
