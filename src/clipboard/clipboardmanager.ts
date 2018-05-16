@@ -7,9 +7,11 @@ export default class ClipboardManager {
 
 	constructor(private uiManager: InterfaceManager) {
 		this.internalClipboardData = null;
-		document.documentElement.oncut = this.OnExternalCut;
-		document.documentElement.onpaste = this.OnExternalPaste;
-		document.documentElement.oncopy = this.OnExternalCopy;
+
+		// Why does the binding to "This" work within these methods?
+		document.documentElement.oncut = (event: ClipboardEvent) => { this.OnExternalCut(event) };
+		document.documentElement.onpaste = (event: ClipboardEvent) => { this.OnExternalPaste(event) };
+		document.documentElement.oncopy = (event: ClipboardEvent) => { this.OnExternalCopy(event) };
 	}
 
 	/**
@@ -46,7 +48,7 @@ export default class ClipboardManager {
 	 * 
 	 * We copy to both the internal and external buffers so all copy/paste instances are unified.
 	 */
-	OnExternalCopy = (event: ClipboardEvent): void => {
+	OnExternalCopy(event: ClipboardEvent): void {
 		if(event.type !== ClipboardDict.Copy) {
 			throw new Error(`Cannot perform ${event.type} action on copy`);
 		}
@@ -128,7 +130,7 @@ export default class ClipboardManager {
 	 * 
 	 * We copy to both the internal and external clipboards so all copy/paste instances are unified.
 	 */
-	OnExternalCut = (event: ClipboardEvent): void => {
+	OnExternalCut(event: ClipboardEvent): void {
 		if(event.type !== ClipboardDict.Cut) {
 			throw new Error(`Cannot perform ${event.type} action on cut`);
 		}
@@ -199,7 +201,7 @@ export default class ClipboardManager {
 	 * 
 	 * The data that SHOULD be bound would be data #2.
 	 */
-	OnExternalPaste = (event: ClipboardEvent): void => {
+	OnExternalPaste(event: ClipboardEvent): void {
 		if(event.type !== ClipboardDict.Paste) {
 			throw new Error(`Cannot perform ${event.type} action on paste`);
 		}
