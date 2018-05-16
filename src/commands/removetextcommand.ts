@@ -8,7 +8,6 @@ export default class RemoveTextCommand implements ICommand {
 
 	Do(): void {
 		this.removedText = this.sourceContext.RemoveText(this.textIndex);
-		this.sourceContext.Draw();
 	}
 	Undo(): void {
 		if(this.removedText === null) {
@@ -16,6 +15,5 @@ export default class RemoveTextCommand implements ICommand {
 		}
 
 		this.sourceContext.AddText(this.removedText, this.textIndex);
-		this.sourceContext.Draw();
 	}
 }

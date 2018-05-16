@@ -45,7 +45,8 @@ export class CanvasContext implements IInterfaceContext {
 
 		canvas.ondrag = (event: DragEvent) => { this.HandleDrag(event); };
 		uiManager.SubscribeContext(this);
-		this.Draw();
+
+		window.requestAnimationFrame((timestamp: number) => { this.Draw() });
 	}
 
 	public AddText(text: string, index: number) {
@@ -72,7 +73,6 @@ export class CanvasContext implements IInterfaceContext {
 			let removeTextCommand = new RemoveTextCommand(this, this.pasteHistory.length-1);
 			this.commandManager.PerformAction(removeTextCommand, false);
 			data.setData(DataTransferTypes.Text, text);
-			this.Draw();
 		}
 		
 		return data;
@@ -101,7 +101,6 @@ export class CanvasContext implements IInterfaceContext {
 		let textToAdd = data.getData(DataTransferTypes.Text);
 		let addTextCommand = new AddTextCommand(this, textToAdd, this.pasteHistory.length);
 		this.commandManager.PerformAction(addTextCommand, false);
-		this.Draw();
 	}
 
 	HandleDragOver(event: DragEvent): void {
@@ -174,5 +173,7 @@ export class CanvasContext implements IInterfaceContext {
 			canvasCtx.fillText(paste, 100, idx * 50, 300);
 			idx++;
 		}
+
+		window.requestAnimationFrame((timestamp: number) => { this.Draw() });
 	}
 }

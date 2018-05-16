@@ -14,13 +14,9 @@ export default class MoveTextCommand implements ICommand {
 	Do(): void {
 		this.destContext.AddText(this.text, this.destIndex);
 		this.sourceContext.RemoveText(this.sourceIndex);
-		this.sourceContext.Draw();
-		this.destContext.Draw();
 	}
 	Undo(): void {
 		this.sourceContext.AddText(this.text, this.sourceIndex);
 		this.destContext.RemoveText(this.destIndex);
-		this.sourceContext.Draw();
-		this.destContext.Draw();
 	}
 }
