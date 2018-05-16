@@ -7,7 +7,7 @@ export enum DraggableDropEffectsTypes {
 	 */
 	None = "none",
 	/**
-	 * The "Default" drag and drop, no specification, unknown behavior
+	 * The "Default" drag and drop, no specification, unknown behavior. This appears to only happen in Firefox.
 	 */
 	Unitialized = "uninitialized",
 	/**

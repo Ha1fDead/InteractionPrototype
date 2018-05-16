@@ -88,20 +88,16 @@ export class CanvasContext implements IInterfaceContext {
 		// prevent the default as this could cause button clicks
 		// also, if the user drops a File into one of these zones the browser will auto-interpret it as a load and change the webpage
 		event.preventDefault();
-		if(!event.dataTransfer.types.includes(DataTransferTypes.Text)) {
-			console.log('text type was not detected, available types: ', event.dataTransfer.types);
-			return;
-		}
-
-		event.dataTransfer.dropEffect = DraggableDropEffectsTypes.Move;
 	}
 
 	HandleDrop(event: DragEvent): void {
 		event.preventDefault();
 		if(!DraggableEffectMoveTypes.includes(<DraggableEffectAllowedTypes>event.dataTransfer.effectAllowed)) {
+			console.log('dropped but the effect is not allowed', event.dataTransfer.effectAllowed);
 			return;
 		}
 		if(!event.dataTransfer.types.includes(DataTransferTypes.Text)) {
+			console.log('dropped but the type is not allowed', event.dataTransfer.types);
 			return;
 		}
 
@@ -116,6 +112,7 @@ export class CanvasContext implements IInterfaceContext {
 		}
 
 		event.dataTransfer.setData(DataTransferTypes.Text, this.pasteHistory[this.pasteHistory.length-1]);
+		event.dataTransfer.effectAllowed = DraggableEffectAllowedTypes.All;
 		event.dataTransfer.dropEffect = DraggableDropEffectsTypes.Move;
 	}
 	HandleDragEnd(event: DragEvent): void {
@@ -136,6 +133,11 @@ export class CanvasContext implements IInterfaceContext {
 		// Fires a TON
 	}
 	HandleDragEnter(event: DragEvent): void {
+		if(!event.dataTransfer.types.includes(DataTransferTypes.Text)) {
+			console.log('text type was not detected, available types: ', event.dataTransfer.types);
+			return;
+		}
+
 		event.dataTransfer.dropEffect = DraggableDropEffectsTypes.Move;
 	}
 	HandleDragLeave(event: DragEvent): void {
