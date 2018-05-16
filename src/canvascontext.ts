@@ -69,7 +69,7 @@ export class CanvasContext implements IInterfaceContext {
 		if(this.pasteHistory.length > 0) {
 			let text = this.pasteHistory[this.pasteHistory.length-1];
 			let removeTextCommand = new RemoveTextCommand(this, this.pasteHistory.length-1);
-			this.commandManager.PerformAction(removeTextCommand);
+			this.commandManager.PerformAction(removeTextCommand, false);
 			data.setData(DataTransferTypes.Text, text);
 			this.Draw();
 		}
@@ -99,7 +99,7 @@ export class CanvasContext implements IInterfaceContext {
 	HandlePaste(data: DataTransfer): void {
 		let textToAdd = data.getData(DataTransferTypes.Text);
 		let addTextCommand = new AddTextCommand(this, textToAdd, this.pasteHistory.length);
-		this.commandManager.PerformAction(addTextCommand);
+		this.commandManager.PerformAction(addTextCommand, false);
 		this.Draw();
 	}
 
@@ -120,8 +120,8 @@ export class CanvasContext implements IInterfaceContext {
 			return;
 		}
 
-		this.AddText(event.dataTransfer.getData(DataTransferTypes.Text), this.pasteHistory.length);
-		this.Draw();
+		let addTextCommand = new AddTextCommand(this, event.dataTransfer.getData(DataTransferTypes.Text), this.pasteHistory.length);
+		this.commandManager.PerformAction(addTextCommand, false);
 	}
 
 	HandleDragStart(event: DragEvent): void {
@@ -144,8 +144,8 @@ export class CanvasContext implements IInterfaceContext {
 		}
 
 		if(event.dataTransfer.dropEffect === DraggableDropEffectsTypes.Move) {
-			this.RemoveText(this.pasteHistory.length-1);
-			this.Draw();
+			let removeTextCommand = new RemoveTextCommand(this, this.pasteHistory.length-1);
+			this.commandManager.PerformAction(removeTextCommand, true);
 		}
 	}
 	HandleDrag(event: DragEvent): void {

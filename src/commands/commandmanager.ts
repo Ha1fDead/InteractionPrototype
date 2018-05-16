@@ -1,7 +1,8 @@
 import { ICommand } from "./command.js";
+import BundledCommand from "./bundledcommand.js";
 
 export interface ICommandStack {
-	PerformAction(command: ICommand): void;
+	PerformAction(command: ICommand, bundleLast: boolean): void;
 
 	UndoLastAction(): void;
 
@@ -16,10 +17,28 @@ export class CommandStack implements ICommandStack {
 	private CommandHistory: ICommand[] = [];
 	private RedoHistory: ICommand[] = [];
 
-	PerformAction(command: ICommand): void {
+	PerformAction(command: ICommand, bundleLast: boolean): void {
 		this.RedoHistory.length = 0;
-		this.CommandHistory.push(command);
+
 		command.Do();
+		if(bundleLast) {
+			if(this.CommandHistory.length === 0) {
+				throw new Error('Cannot bundle a command if there are no commands to bundle!');
+			}
+
+			let lastCommand = <ICommand>this.CommandHistory.pop();
+			if(typeof lastCommand === typeof BundledCommand) {
+				(<BundledCommand>lastCommand).RegisterCommand(command);
+				this.CommandHistory.push(lastCommand);
+			} else {
+				let commandBundle = new BundledCommand();
+				commandBundle.RegisterCommand(lastCommand);
+				commandBundle.RegisterCommand(command);
+				this.CommandHistory.push(commandBundle);
+			}
+		} else {
+			this.CommandHistory.push(command);
+		}
 	}
 	UndoLastAction(): void {
 		if(this.CommandHistory.length <= 0) {
@@ -38,6 +57,7 @@ export class CommandStack implements ICommandStack {
 		nextCommand.Do();
 		this.CommandHistory.push(nextCommand);
 	}
+
 	CanUndo(): boolean {
 		return this.CommandHistory.length > 0;
 	}
