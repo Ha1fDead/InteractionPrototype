@@ -1,11 +1,14 @@
+import { ICommandStack } from './commands/commandmanager.js';
 import { DraggableDropEffectsTypes, DraggableEffectAllowedTypes, DraggableEffectMoveTypes } from './dragdrop/dragdropdict.js';
 import { IInterfaceContext } from "./interfacecontext.js";
 import { InterfaceManager } from "./interfacemanager.js";
 import { DataTransferTypes } from './datatransfertypes.js';
+import RemoveTextCommand from './commands/removetextcommand.js';
+import AddTextCommand from './commands/addtextcommand.js';
 
 export class CanvasContext implements IInterfaceContext {
 	private pasteHistory: string[] = [];
-	constructor(public Id: string, uiManager: InterfaceManager) {
+	constructor(public Id: string, uiManager: InterfaceManager, private commandManager: ICommandStack) {
 		this.pasteHistory.push("this line AAAA");
 		this.pasteHistory.push("this line BBBB");
 		this.pasteHistory.push("this line CCCC");
@@ -44,6 +47,18 @@ export class CanvasContext implements IInterfaceContext {
 		this.Draw();
 	}
 
+	public AddText(text: string, index: number) {
+		this.pasteHistory.splice(index, 0, text);
+	}
+
+	public GetText(index: number) {
+		return this.pasteHistory[index];
+	}
+
+	public RemoveText(index: number): string {
+		return this.pasteHistory.splice(index, 1)[0];
+	}
+
     /**
      * The element's custom handled 'Cut' operation
      *
@@ -52,8 +67,10 @@ export class CanvasContext implements IInterfaceContext {
 	HandleCut(): DataTransfer {
 		let data = new DataTransfer();
 		if(this.pasteHistory.length > 0) {
-			let lastItem = <string>this.pasteHistory.pop();
-			data.setData(DataTransferTypes.Text, lastItem);
+			let text = this.pasteHistory[this.pasteHistory.length-1];
+			let removeTextCommand = new RemoveTextCommand(this, this.pasteHistory.length-1);
+			this.commandManager.PerformAction(removeTextCommand);
+			data.setData(DataTransferTypes.Text, text);
 			this.Draw();
 		}
 		
@@ -68,7 +85,7 @@ export class CanvasContext implements IInterfaceContext {
 	HandleCopy(): DataTransfer {
 		let data = new DataTransfer();
 		if(this.pasteHistory.length > 0) {
-			data.setData(DataTransferTypes.Text, this.pasteHistory[this.pasteHistory.length-1]);
+			data.setData(DataTransferTypes.Text, this.GetText(this.pasteHistory.length-1));
 		}
 		return data;
 	}
@@ -80,7 +97,9 @@ export class CanvasContext implements IInterfaceContext {
      * @param data to be pasted
      */
 	HandlePaste(data: DataTransfer): void {
-		this.pasteHistory.push(data.getData(DataTransferTypes.Text));
+		let textToAdd = data.getData(DataTransferTypes.Text);
+		let addTextCommand = new AddTextCommand(this, textToAdd, this.pasteHistory.length);
+		this.commandManager.PerformAction(addTextCommand);
 		this.Draw();
 	}
 
@@ -101,7 +120,7 @@ export class CanvasContext implements IInterfaceContext {
 			return;
 		}
 
-		this.pasteHistory.push(event.dataTransfer.getData(DataTransferTypes.Text));
+		this.AddText(event.dataTransfer.getData(DataTransferTypes.Text), this.pasteHistory.length);
 		this.Draw();
 	}
 
@@ -111,7 +130,7 @@ export class CanvasContext implements IInterfaceContext {
 			event.preventDefault();
 		}
 
-		event.dataTransfer.setData(DataTransferTypes.Text, this.pasteHistory[this.pasteHistory.length-1]);
+		event.dataTransfer.setData(DataTransferTypes.Text, this.GetText(this.pasteHistory.length-1));
 		event.dataTransfer.effectAllowed = DraggableEffectAllowedTypes.All;
 		event.dataTransfer.dropEffect = DraggableDropEffectsTypes.Move;
 	}
@@ -125,7 +144,7 @@ export class CanvasContext implements IInterfaceContext {
 		}
 
 		if(event.dataTransfer.dropEffect === DraggableDropEffectsTypes.Move) {
-			this.pasteHistory.pop();
+			this.RemoveText(this.pasteHistory.length-1);
 			this.Draw();
 		}
 	}
@@ -144,7 +163,7 @@ export class CanvasContext implements IInterfaceContext {
 		event.dataTransfer.dropEffect = DraggableDropEffectsTypes.None;
 	}
 
-	private Draw(): void {
+	public Draw(): void {
 		// quick and dirty paste demonstration
 		let canvas = <HTMLCanvasElement>document.getElementById(this.Id);
 		let canvasCtx = <CanvasRenderingContext2D>canvas.getContext("2d");

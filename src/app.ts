@@ -1,13 +1,20 @@
+import { ICommandStack, CommandStack } from './commands/commandmanager.js';
 import { DraggableEffectAllowedTypes } from './dragdrop/dragdropdict.js';
 import { InterfaceManager } from "./interfacemanager.js";
 import { CanvasContext } from "./canvascontext.js";
 
 class App {
-	private InterfaceManager: InterfaceManager = new InterfaceManager();
+	private CommandManager: ICommandStack;
+	private InterfaceManager: InterfaceManager;
+
+	constructor() {
+		this.CommandManager = new CommandStack();
+		this.InterfaceManager = new InterfaceManager(this.CommandManager);
+	}
 
 	Run(): void {
-		let canvasListener1 = new CanvasContext('prototypeCanvas1', this.InterfaceManager);
-		let canvasListener2 = new CanvasContext('prototypeCanvas2', this.InterfaceManager);
+		let canvasListener1 = new CanvasContext('prototypeCanvas1', this.InterfaceManager, this.CommandManager);
+		let canvasListener2 = new CanvasContext('prototypeCanvas2', this.InterfaceManager, this.CommandManager);
 
 		let dragElement1 = <HTMLElement>document.getElementById('drag1');
 		dragElement1.ondragstart = (dragEvent: DragEvent) => {

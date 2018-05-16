@@ -1,3 +1,4 @@
+import { ICommandStack } from './commands/commandmanager.js';
 import { IInterfaceContext } from "./interfacecontext.js";
 import { ClipboardDict } from "./clipboard/clipboarddict.js";
 import { DataTransferTypes } from "./datatransfertypes.js";
@@ -18,7 +19,7 @@ export class InterfaceManager {
 	private internalClipboardData: DataTransfer | null;
 	private InterfaceContexts: IInterfaceContext[];
 
-	constructor() {
+	constructor(private commandStack: ICommandStack) {
 		this.internalClipboardData = null;
 		this.InterfaceContexts = [];
 		this.init();
@@ -37,6 +38,14 @@ export class InterfaceManager {
 		window.ondragover = (event: DragEvent) => {
 			this.HandleWindowDrag(event);
 		};
+		window.onkeyup = (event: KeyboardEvent) => {
+			console.log(event);
+			if (event.ctrlKey && event.code === 'KeyZ' && this.commandStack.CanUndo()) {
+				this.commandStack.UndoLastAction();
+			} else if (event.ctrlKey && event.code === 'KeyY' && this.commandStack.CanRedo()) {
+				this.commandStack.RedoAction();
+			}
+		}
 	}
 
 	private HandleWindowDrag(event: DragEvent): void {
