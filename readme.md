@@ -67,18 +67,6 @@ Regarding the asynchronous APIs, it appears that (in Chrome)
 - You can always set data into the clipboard without explicit permissions
 - Reading from the clipboard asynchronously always requires permissions
 
-## When to use Webgl or Html/CSS
-
-- I need to determine when to use a canvas element, and when do use native complex html /css
-  - using native html/css for GUIs is better
-  - but they need to be "Bolted" on seamlessly
-- Are there any instances of me wanting to make an interface WITHIN the game space itself? Most interfaces are just 2d flat interfaces...
-
-Reasons for needing to figure this out:
-
-- Take advantage of existing CSS animations, new HTML features (Drag and Drop)
-- Avoid having to recreate simple interfaces in webgl
-
 ## Resources
 
 - [Actual W3 Spec](https://www.w3.org/TR/clipboard-apis/)
