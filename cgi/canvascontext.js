@@ -32,6 +32,9 @@ export class CanvasContext {
             if (potentialIndex < this.pasteHistory.length) {
                 this.selectedIndex = potentialIndex;
             }
+            else {
+                this.selectedIndex = null;
+            }
         };
         canvas.ondrop = (event) => { this.HandleDrop(event); };
         canvas.ondragover = (event) => { this.HandleDragOver(event); };
@@ -101,14 +104,12 @@ export class CanvasContext {
         event.dataTransfer.dropEffect = DraggableDropEffectsTypes.Move;
     }
     HandleDragEnd(event) {
-        if (this.selectedIndex === null) {
-            return;
-        }
         if (event.dataTransfer.dropEffect === DraggableEffectAllowedTypes.None) {
             return;
         }
+        let index = this.selectedIndex === null ? this.pasteHistory.length - 1 : this.selectedIndex;
         if (event.dataTransfer.dropEffect === DraggableDropEffectsTypes.Move) {
-            let removeTextCommand = new RemoveTextCommand(this, this.selectedIndex);
+            let removeTextCommand = new RemoveTextCommand(this, index);
             this.commandManager.PerformAction(removeTextCommand, true);
         }
     }
