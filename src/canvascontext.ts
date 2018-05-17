@@ -37,6 +37,8 @@ export class CanvasContext implements IInterfaceContext {
 			let potentialIndex = Math.floor(ev.y / 50);
 			if(potentialIndex < this.pasteHistory.length) {
 				this.selectedIndex = potentialIndex;
+			} else {
+				this.selectedIndex = null;
 			}
 		};
 
@@ -151,16 +153,15 @@ export class CanvasContext implements IInterfaceContext {
 		event.dataTransfer.dropEffect = DraggableDropEffectsTypes.Move;
 	}
 	HandleDragEnd(event: DragEvent): void {
-		if(this.selectedIndex === null) {
-			return;
-		}
 		if(event.dataTransfer.dropEffect === DraggableEffectAllowedTypes.None) {
 			// event was cancelled
 			return;
 		}
 
+		let index = this.selectedIndex === null ? this.pasteHistory.length - 1 : this.selectedIndex;
+
 		if(event.dataTransfer.dropEffect === DraggableDropEffectsTypes.Move) {
-			let removeTextCommand = new RemoveTextCommand(this, this.selectedIndex);
+			let removeTextCommand = new RemoveTextCommand(this, index);
 			this.commandManager.PerformAction(removeTextCommand, true);
 		}
 	}
