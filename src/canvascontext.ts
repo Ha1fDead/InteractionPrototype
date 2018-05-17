@@ -34,8 +34,6 @@ export class CanvasContext implements IInterfaceContext {
 				clipboardManager.OnInternalPaste();
 			}
 
-			console.log('test commit');
-
 			let potentialIndex = Math.floor(ev.y / 50);
 			if(potentialIndex < this.pasteHistory.length) {
 				this.selectedIndex = potentialIndex;
