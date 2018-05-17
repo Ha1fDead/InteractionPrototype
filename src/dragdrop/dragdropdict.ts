@@ -70,3 +70,10 @@ export const DraggableEffectMoveTypes: DraggableEffectAllowedTypes[] = [
 	DraggableEffectAllowedTypes.CopyMove,
 	DraggableEffectAllowedTypes.All
 ];
+
+export const DraggableEffectCopyTypes: DraggableEffectAllowedTypes[] = [
+	DraggableEffectAllowedTypes.All,
+	DraggableEffectAllowedTypes.Copy,
+	DraggableEffectAllowedTypes.CopyLink,
+	DraggableEffectAllowedTypes.CopyMove
+];

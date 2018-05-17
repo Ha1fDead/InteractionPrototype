@@ -1,5 +1,5 @@
 import { ICommandStack } from './commands/commandmanager.js';
-import { DraggableDropEffectsTypes, DraggableEffectAllowedTypes, DraggableEffectMoveTypes } from './dragdrop/dragdropdict.js';
+import { DraggableDropEffectsTypes, DraggableEffectAllowedTypes, DraggableEffectMoveTypes, DraggableEffectCopyTypes } from './dragdrop/dragdropdict.js';
 import { IInterfaceContext } from "./interfacecontext.js";
 import { InterfaceManager } from "./interfacemanager.js";
 import { DataTransferTypes } from './datatransfertypes.js';
@@ -126,7 +126,9 @@ export class CanvasContext implements IInterfaceContext {
 
 	HandleDrop(event: DragEvent): void {
 		event.preventDefault();
-		if(!DraggableEffectMoveTypes.includes(<DraggableEffectAllowedTypes>event.dataTransfer.effectAllowed)) {
+		let dropEffectAllowed = <DraggableEffectAllowedTypes>event.dataTransfer.effectAllowed;
+		if(!DraggableEffectMoveTypes.includes(dropEffectAllowed)
+		&& !DraggableEffectCopyTypes.includes(dropEffectAllowed)) {
 			console.log('dropped but the effect is not allowed', event.dataTransfer.effectAllowed);
 			return;
 		}
