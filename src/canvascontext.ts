@@ -159,7 +159,7 @@ export class CanvasContext implements IInterfaceContext {
 		}
 
 		let index = this.selectedIndex === null ? this.pasteHistory.length - 1 : this.selectedIndex;
-
+		this.selectedIndex = null;
 		if(event.dataTransfer.dropEffect === DraggableDropEffectsTypes.Move) {
 			let removeTextCommand = new RemoveTextCommand(this, index);
 			this.commandManager.PerformAction(removeTextCommand, true);
