@@ -83,13 +83,11 @@ export class CanvasContext implements IInterfaceContext {
      */
 	HandleCut(): DataTransfer {
 		let data = new DataTransfer();
-		if(this.selectedIndex !== null) {
-			let text = this.pasteHistory[this.selectedIndex];
-			let removeTextCommand = new RemoveTextCommand(this, this.selectedIndex);
-			this.commandManager.PerformAction(removeTextCommand, false);
-			data.setData(DataTransferTypes.Text, text);
-		}
-		
+		let indexToUse = this.selectedIndex === null ? this.pasteHistory.length - 1 : this.selectedIndex;
+		let text = this.pasteHistory[indexToUse];
+		let removeTextCommand = new RemoveTextCommand(this, indexToUse);
+		this.commandManager.PerformAction(removeTextCommand, false);
+		data.setData(DataTransferTypes.Text, text);
 		return data;
 	}
 
