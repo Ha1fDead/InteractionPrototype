@@ -11,6 +11,16 @@ Hey!
 Code\Valhalla\Prototypes\Clipboard> openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem -config .\openssl.conf
 ```
 
+## Deploying
+
+I use Github Pages to demonstrate this code (because its really simple). I host it out of the branch `gh-pages`. Simply cd into the branch, and run:
+
+1. `git pull origin master`
+2. `tsc`
+3. `git push`
+
+In my experience it takes a few moments for Github to stop caching the old pages. To get this working, I simply included the compiled source code into the deployment; so this branch is significantly larger than the master branch.
+
 ## Draggable Prototypes
 
 Should I consider using Shopify's [Draggable](https://github.com/Shopify/draggable#documentation)?
