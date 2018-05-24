@@ -1,6 +1,14 @@
-# DataTransfer API Prototypes
+# Interaction Prototypes
 
-Hey!
+This project houses my prototypes for "Core" interaction examples, including:
+
+1. Drag and Drop
+2. Copy and Paste
+3. Clipboard
+4. Context Menu
+5. Touch Events and Mobile Handling
+
+This is a base project for my overall "Valhalla" project.
 
 ## Setting Up Project
 
