@@ -1,3 +1,6 @@
+import ContextManager from "../contextual/contextmanager.js";
+import VTouch from "./vtouch.js";
+
 enum TouchTypes {
 	Start = "touchstart",
 	End = "touchend",
@@ -5,24 +8,12 @@ enum TouchTypes {
 	Cancel = "touchcancel"
 };
 
-interface VTouch extends Touch {
-	/**
-	 * When the touch event started using High Precision time
-	 */
-	TouchStart: number;
-
-	/**
-	 * Timers related to this touch event 
-	 */
-	Timers: number[];
-}
-
 const LONGTOUCH_TIMER_MS = 400;
 
 export class TouchManager {
 	private ongoingTouches: VTouch[] = [];
 
-	constructor() {
+	constructor(private contextManager: ContextManager) {
 		document.documentElement.ontouchstart = (ev: TouchEvent) => { return this.HandleTouchStart(ev); };
 		document.documentElement.ontouchend = (ev: TouchEvent) => { return this.HandleTouchEnd(ev); };
 		document.documentElement.ontouchcancel = (ev: TouchEvent) => { return this.HandleTouchCancel(ev); };
@@ -39,13 +30,20 @@ export class TouchManager {
 	 * @param event 
 	 */
 	HandleTouchStart(event: TouchEvent): boolean {
+		let shouldKeepContextMenu: boolean = false;
 		for(let x = 0; x < event.changedTouches.length; x++) {
 			let newTouch = event.changedTouches.item(x);
 			if(newTouch === null) {
 				throw new Error();
 			}
+
+			shouldKeepContextMenu = shouldKeepContextMenu || this.contextManager.ShouldClearMenu(event.target);
 			
-			this.StoreTouch(newTouch);
+			let storedTouch = this.StoreTouch(newTouch);
+		}
+
+		if(shouldKeepContextMenu) {
+			this.contextManager.ClearMenu();
 		}
 
 		return true;
@@ -118,7 +116,7 @@ export class TouchManager {
 	 * Future touch parameters will include "radiusX", "radiusY", "rotationAngle", and "force"
 	 * @param touch 
 	 */
-	private StoreTouch(touch: Touch): void {
+	private StoreTouch(touch: Touch): VTouch {
 		let vTouch: VTouch =  {
 			identifier: touch.identifier,
 			clientX: touch.clientX,
@@ -138,6 +136,8 @@ export class TouchManager {
 
 		vTouch.Timers.push(longTouchTimer);
 		this.ongoingTouches.push(vTouch);
+
+		return vTouch;
 	}
 
 	private UpdateTouch(touchId: number, touch: Touch): void {
@@ -172,6 +172,20 @@ export class TouchManager {
 	}
 
 	private HandleLongTouch(touch: VTouch): void {
+		this.contextManager.HandleLongPress(touch);
+		// find the active context
+
+		// grab its context menu items
+
+		// load up the context menu from it
+
 		console.log(`long touch ;)`, touch);
 	}
 }
+
+// How to funnel both touch and mouse events into a context menu?
+
+	// touch long press -> context menu -> interactionmanager -> gets everything
+	
+	// BUT, what about interactions that want to subscribe to specific gestures?
+		// I imagine I would just add "HandleGesture" and take in a Gesture on the specific contexts

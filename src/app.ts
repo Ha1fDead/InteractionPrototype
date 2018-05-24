@@ -1,16 +1,22 @@
+import { TouchManager } from './touchable/touchmanager.js';
 import { ICommandStack, CommandStack } from './commands/commandmanager.js';
 import { DraggableEffectAllowedTypes } from './dragdrop/dragdropdict.js';
 import { InteractionManager } from "./interaction/interactionmanager.js";
 import { CanvasContext } from "./canvascontext.js";
 import ClipboardManager from './clipboard/clipboardmanager.js';
+import ContextManager from './contextual/contextmanager.js';
 
 class App {
 	private CommandManager: ICommandStack;
 	private InterfaceManager: InteractionManager;
 	private ClipboardManager: ClipboardManager;
+	private ContextManager: ContextManager;
+	private TouchManager: TouchManager;
 
 	constructor() {
 		this.CommandManager = new CommandStack();
+		this.ContextManager = new ContextManager();
+		this.TouchManager = new TouchManager(this.ContextManager);
 		this.InterfaceManager = new InteractionManager(this.CommandManager);
 		this.ClipboardManager = new ClipboardManager(this.InterfaceManager);
 	}
