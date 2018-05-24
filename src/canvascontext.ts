@@ -1,17 +1,17 @@
 import { ICommandStack } from './commands/commandmanager.js';
 import { DraggableDropEffectsTypes, DraggableEffectAllowedTypes, DraggableEffectMoveTypes, DraggableEffectCopyTypes } from './dragdrop/dragdropdict.js';
-import { IInterfaceContext } from "./interfacecontext.js";
-import { InterfaceManager } from "./interfacemanager.js";
+import { IInteractionContext } from "./interactioncontext.js";
+import { InteractionManager } from "./interactionmanager.js";
 import { DataTransferTypes } from './datatransfertypes.js';
 import RemoveTextCommand from './commands/removetextcommand.js';
 import AddTextCommand from './commands/addtextcommand.js';
 import ClipboardManager from './clipboard/clipboardmanager.js';
 
-export class CanvasContext implements IInterfaceContext {
+export class CanvasContext implements IInteractionContext {
 	private pasteHistory: string[] = [];
 	private selectedIndex: number | null = null;
 
-	constructor(public Id: string, uiManager: InterfaceManager, private clipboardManager: ClipboardManager, private commandManager: ICommandStack) {
+	constructor(public Id: string, uiManager: InteractionManager, private clipboardManager: ClipboardManager, private commandManager: ICommandStack) {
 		this.pasteHistory.push("this line AAAA");
 		this.pasteHistory.push("this line BBBB");
 		this.pasteHistory.push("this line CCCC");

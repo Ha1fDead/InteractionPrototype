@@ -1,17 +1,17 @@
 import { ICommandStack, CommandStack } from './commands/commandmanager.js';
 import { DraggableEffectAllowedTypes } from './dragdrop/dragdropdict.js';
-import { InterfaceManager } from "./interfacemanager.js";
+import { InteractionManager } from "./interactionmanager.js";
 import { CanvasContext } from "./canvascontext.js";
 import ClipboardManager from './clipboard/clipboardmanager.js';
 
 class App {
 	private CommandManager: ICommandStack;
-	private InterfaceManager: InterfaceManager;
+	private InterfaceManager: InteractionManager;
 	private ClipboardManager: ClipboardManager;
 
 	constructor() {
 		this.CommandManager = new CommandStack();
-		this.InterfaceManager = new InterfaceManager(this.CommandManager);
+		this.InterfaceManager = new InteractionManager(this.CommandManager);
 		this.ClipboardManager = new ClipboardManager(this.InterfaceManager);
 	}
 
