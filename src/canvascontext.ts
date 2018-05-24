@@ -1,8 +1,8 @@
 import { ICommandStack } from './commands/commandmanager.js';
 import { DraggableDropEffectsTypes, DraggableEffectAllowedTypes, DraggableEffectMoveTypes, DraggableEffectCopyTypes } from './dragdrop/dragdropdict.js';
-import { IInteractionContext } from "./interactioncontext.js";
-import { InteractionManager } from "./interactionmanager.js";
-import { DataTransferTypes } from './datatransfertypes.js';
+import { IInteractionContext } from "./interaction/interactioncontext.js";
+import { InteractionManager } from "./interaction/interactionmanager.js";
+import { DataTransferTypes } from './interaction/datatransfertypes.js';
 import RemoveTextCommand from './commands/removetextcommand.js';
 import AddTextCommand from './commands/addtextcommand.js';
 import ClipboardManager from './clipboard/clipboardmanager.js';

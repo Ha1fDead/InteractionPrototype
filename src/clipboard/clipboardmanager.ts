@@ -1,5 +1,5 @@
 import { ClipboardDict } from './clipboarddict.js';
-import { InteractionManager } from './../interactionmanager.js';
+import { InteractionManager } from './../interaction/interactionmanager.js';
 import { DataTransferTypes } from '../datatransfertypes.js';
 
 export default class ClipboardManager {

@@ -1,6 +1,6 @@
 import { ICommandStack, CommandStack } from './commands/commandmanager.js';
 import { DraggableEffectAllowedTypes } from './dragdrop/dragdropdict.js';
-import { InteractionManager } from "./interactionmanager.js";
+import { InteractionManager } from "./interaction/interactionmanager.js";
 import { CanvasContext } from "./canvascontext.js";
 import ClipboardManager from './clipboard/clipboardmanager.js';
 

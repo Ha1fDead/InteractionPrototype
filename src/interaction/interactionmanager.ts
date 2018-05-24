@@ -1,6 +1,6 @@
-import { ICommandStack } from './commands/commandmanager.js';
+import { ICommandStack } from '../commands/commandmanager.js';
 import { IInteractionContext } from "./interactioncontext.js";
-import { DraggableDropEffectsTypes, DraggableEffectAllowedTypes } from "./dragdrop/dragdropdict.js";
+import { DraggableDropEffectsTypes, DraggableEffectAllowedTypes } from "../dragdrop/dragdropdict.js";
 
 export class InteractionManager {
 	private InterfaceContexts: IInteractionContext[];
