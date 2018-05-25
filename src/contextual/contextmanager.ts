@@ -1,3 +1,5 @@
+import { IInteractionContext } from './../interaction/interactioncontext.js';
+import { InteractionManager } from './../interaction/interactionmanager.js';
 import ContextMenuElement from "./contextmenu.js";
 import VTouch from "../touchable/vtouch.js";
 
@@ -8,7 +10,7 @@ const ContextMenuId = 'contextmenu';
  */
 export default class ContextManager {
 
-	constructor() {
+	constructor(private interactionManager: InteractionManager) {
 		// this would be moved to the IInterfaceContext
 		document.documentElement.oncontextmenu = (ev: MouseEvent) => { this.ContextEvent(ev); };
 		// this would be moved to the IInterfaceContext
@@ -53,7 +55,7 @@ export default class ContextManager {
 	 */
 	private ShouldSpawnContextMenu(target: EventTarget | null): boolean {
 		// Create context menu if the right click is not already on a context menu
-		return target !== null && (<HTMLElement>target).id !== ContextMenuId;
+		return target !== null && (<HTMLElement>target).id !== ContextMenuId && this.interactionManager.FindActiveContext() !== null;
 	}
 
 	private SpawnContextMenu(positionX: number, positionY: number): void {
@@ -66,6 +68,7 @@ export default class ContextManager {
 		contextMenu.style.boxShadow = "4px 4px 4px 0px #bb7474";
 		contextMenu.style.top = positionY.toString();
 		contextMenu.style.left = positionX.toString();
+		contextMenu.actions = (<IInteractionContext>this.interactionManager.FindActiveContext()).GetContextActions();
 		mainElement.appendChild(contextMenu);
 	}
 }

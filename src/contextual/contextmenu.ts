@@ -1,3 +1,6 @@
+import IContextAction from "./contextaction.js";
+import IUserAction from "../useractions/useraction";
+
 interface CustomElement {
 	connectedCallback(): void;
 
@@ -13,10 +16,6 @@ interface CustomElement {
 const template = document.createElement('template');
 template.innerHTML = `
 	<ul>
-		<li><button>Action</button></li>
-		<li><button>Action</button></li>
-		<li><button>Action</button></li>
-		<li><button>Action</button></li>
 	</ul>
 `;
 
@@ -27,6 +26,21 @@ export default class ContextMenuElement extends HTMLElement {
 
 		var shadow = this.attachShadow({ mode: 'open' });
 		shadow.appendChild(template.content.cloneNode(true));
+	}
+
+	connectedCallback(): void {
+	}
+
+	set actions(actions: IContextAction[]) {
+		let rootElement = <HTMLUListElement>(<ShadowRoot>this.shadowRoot).querySelector("ul");
+		for(let action of actions) {
+			let listElement = document.createElement('li');
+			let buttonElement = document.createElement('button');
+			buttonElement.onclick = (<IUserAction>action.Action).Perform;
+			buttonElement.innerText = action.Name;
+			listElement.appendChild(buttonElement);
+			rootElement.appendChild(listElement);
+		}
 	}
 }
 

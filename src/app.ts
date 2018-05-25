@@ -15,9 +15,9 @@ class App {
 
 	constructor() {
 		this.CommandManager = new UndoRedoCommandStack();
-		this.ContextManager = new ContextManager();
-		this.TouchManager = new TouchManager(this.ContextManager);
 		this.InterfaceManager = new InteractionManager(this.CommandManager);
+		this.ContextManager = new ContextManager(this.InterfaceManager);
+		this.TouchManager = new TouchManager(this.ContextManager);
 		this.ClipboardManager = new ClipboardManager(this.InterfaceManager);
 	}
 

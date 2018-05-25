@@ -48,6 +48,8 @@ OS/browser/layout specific functionality should reside here
   - System (info regarding system-specific rules and logic)
 - UserActions (Every user action goes here, things that are undoable/redoable, or listable via '/')
   - e.g. "pickup item", "attack", "activate ability", "open window", "fire macro"
+  - clipboard
+  - undoredo
 - UI (All UI interactions, rendering, components, etc.)
   - uimanagers
     - uimanager
@@ -61,18 +63,12 @@ OS/browser/layout specific functionality should reside here
     - Inventory
     - RosterTracker
   - draganddrop
-  - clipboard
-    - Should the clipboard be in the UI layer?
-    - thinking about it more succinctly, this is kindof halfway between a "UserAction" and the "UI
-    - exact same thing with undoredo
   - contextual
   - touchable
-  - undoredo
-    - many different UI instances will invoke the "Undo" or "Redo" actions
-    - thus, it is not a UI decision but a UserAction itself that is derived from the UI
 
 Unknown architecture decisions:
 
+- What about things such as "InventoryItem" which will be rendered in HTML?
 - Where does manipulating core stats belong? E.g. I open the Character sheet, and change the max health of an actor from 3 to 4. Where does that logic go?
   - Naively, you could put it in the UI layer
   - Fizzbuzz enterprizey, you can put it in a user action (it would need to go here anyway for undo/redo)
