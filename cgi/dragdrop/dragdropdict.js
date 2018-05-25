@@ -26,4 +26,10 @@ export const DraggableEffectMoveTypes = [
     DraggableEffectAllowedTypes.CopyMove,
     DraggableEffectAllowedTypes.All
 ];
+export const DraggableEffectCopyTypes = [
+    DraggableEffectAllowedTypes.All,
+    DraggableEffectAllowedTypes.Copy,
+    DraggableEffectAllowedTypes.CopyLink,
+    DraggableEffectAllowedTypes.CopyMove
+];
 //# sourceMappingURL=dragdropdict.js.map

@@ -1,7 +1,8 @@
-import { DraggableDropEffectsTypes, DraggableEffectAllowedTypes, DraggableEffectMoveTypes } from './dragdrop/dragdropdict.js';
-import { DataTransferTypes } from './datatransfertypes.js';
-import RemoveTextCommand from './commands/removetextcommand.js';
-import AddTextCommand from './commands/addtextcommand.js';
+import RemoveTextCommand from './useractions/undoredo/removetextcommand.js';
+import AddTextCommand from './useractions/undoredo/addtextcommand.js';
+import { DraggableDropEffectsTypes, DraggableEffectAllowedTypes, DraggableEffectMoveTypes, DraggableEffectCopyTypes } from './dragdrop/dragdropdict.js';
+import { DataTransferTypes } from './interaction/datatransfertypes.js';
+import HelloWorldAction from './useractions/helloworldaction.js';
 export class CanvasContext {
     constructor(Id, uiManager, clipboardManager, commandManager) {
         this.Id = Id;
@@ -55,14 +56,23 @@ export class CanvasContext {
     RemoveText(index) {
         return this.pasteHistory.splice(index, 1)[0];
     }
+    GetContextActions() {
+        let actions = [];
+        let helloWorldAction = {
+            Name: "say hello",
+            Action: new HelloWorldAction(),
+            ActionList: null
+        };
+        actions.push(helloWorldAction);
+        return actions;
+    }
     HandleCut() {
         let data = new DataTransfer();
-        if (this.selectedIndex !== null) {
-            let text = this.pasteHistory[this.selectedIndex];
-            let removeTextCommand = new RemoveTextCommand(this, this.selectedIndex);
-            this.commandManager.PerformAction(removeTextCommand, false);
-            data.setData(DataTransferTypes.Text, text);
-        }
+        let indexToUse = this.selectedIndex === null ? this.pasteHistory.length - 1 : this.selectedIndex;
+        let text = this.pasteHistory[indexToUse];
+        let removeTextCommand = new RemoveTextCommand(this, indexToUse);
+        this.commandManager.PerformAction(removeTextCommand, false);
+        data.setData(DataTransferTypes.Text, text);
         return data;
     }
     HandleCopy() {
@@ -82,7 +92,9 @@ export class CanvasContext {
     }
     HandleDrop(event) {
         event.preventDefault();
-        if (!DraggableEffectMoveTypes.includes(event.dataTransfer.effectAllowed)) {
+        let dropEffectAllowed = event.dataTransfer.effectAllowed;
+        if (!DraggableEffectMoveTypes.includes(dropEffectAllowed)
+            && !DraggableEffectCopyTypes.includes(dropEffectAllowed)) {
             console.log('dropped but the effect is not allowed', event.dataTransfer.effectAllowed);
             return;
         }
@@ -108,6 +120,7 @@ export class CanvasContext {
             return;
         }
         let index = this.selectedIndex === null ? this.pasteHistory.length - 1 : this.selectedIndex;
+        this.selectedIndex = null;
         if (event.dataTransfer.dropEffect === DraggableDropEffectsTypes.Move) {
             let removeTextCommand = new RemoveTextCommand(this, index);
             this.commandManager.PerformAction(removeTextCommand, true);
