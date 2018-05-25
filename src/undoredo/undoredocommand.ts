@@ -6,7 +6,7 @@
  * 
  * Cut, Paste, Drag and Drop, etc..
  */
-export interface ICommand {
+export interface IUndoRedoCommand {
 	/**
 	 * Performs the Command (or "Redoes" the command)
 	 */

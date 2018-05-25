@@ -1,9 +1,9 @@
-import { ICommand } from './command';
+import { IUndoRedoCommand } from './undoredocommand.js';
 
-export default class BundledCommand implements ICommand {
-	private commandsToUndo: ICommand[] = [];
+export default class BundledCommand implements IUndoRedoCommand {
+	private commandsToUndo: IUndoRedoCommand[] = [];
 
-	RegisterCommand(command: ICommand): void {
+	RegisterCommand(command: IUndoRedoCommand): void {
 		this.commandsToUndo.push(command);
 	}
 

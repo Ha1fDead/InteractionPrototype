@@ -1,11 +1,11 @@
-import { ICommandStack } from '../commands/commandmanager.js';
+import { IUndoRedoCommandStack } from '../undoredo/undoredocommandmanager.js';
 import { IInteractionContext } from "./interactioncontext.js";
 import { DraggableDropEffectsTypes, DraggableEffectAllowedTypes } from "../dragdrop/dragdropdict.js";
 
 export class InteractionManager {
 	private InterfaceContexts: IInteractionContext[];
 
-	constructor(private commandStack: ICommandStack) {
+	constructor(private commandStack: IUndoRedoCommandStack) {
 		this.InterfaceContexts = [];
 		this.init();
 	}

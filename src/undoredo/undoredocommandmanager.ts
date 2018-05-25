@@ -1,8 +1,8 @@
-import { ICommand } from "./command.js";
+import { IUndoRedoCommand } from './undoredocommand.js';
 import BundledCommand from "./bundledcommand.js";
 
-export interface ICommandStack {
-	PerformAction(command: ICommand, bundleLast: boolean): void;
+export interface IUndoRedoCommandStack {
+	PerformAction(command: IUndoRedoCommand, bundleLast: boolean): void;
 
 	UndoLastAction(): void;
 
@@ -13,11 +13,11 @@ export interface ICommandStack {
 	CanRedo(): boolean;
 }
 
-export class CommandStack implements ICommandStack {
-	private CommandHistory: ICommand[] = [];
-	private RedoHistory: ICommand[] = [];
+export class UndoRedoCommandStack implements IUndoRedoCommandStack {
+	private CommandHistory: IUndoRedoCommand[] = [];
+	private RedoHistory: IUndoRedoCommand[] = [];
 
-	PerformAction(command: ICommand, bundleLast: boolean): void {
+	PerformAction(command: IUndoRedoCommand, bundleLast: boolean): void {
 		this.RedoHistory.length = 0;
 
 		command.Do();
@@ -26,7 +26,7 @@ export class CommandStack implements ICommandStack {
 				throw new Error('Cannot bundle a command if there are no commands to bundle!');
 			}
 
-			let lastCommand = <ICommand>this.CommandHistory.pop();
+			let lastCommand = <IUndoRedoCommand>this.CommandHistory.pop();
 			if(typeof lastCommand === typeof BundledCommand) {
 				(<BundledCommand>lastCommand).RegisterCommand(command);
 				this.CommandHistory.push(lastCommand);
@@ -44,7 +44,7 @@ export class CommandStack implements ICommandStack {
 		if(this.CommandHistory.length <= 0) {
 			throw new Error('Cannot undo an action that does not exist');
 		}
-		let lastCommand = <ICommand>this.CommandHistory.pop();
+		let lastCommand = <IUndoRedoCommand>this.CommandHistory.pop();
 		this.RedoHistory.push(lastCommand);
 		lastCommand.Undo();
 	}
@@ -53,7 +53,7 @@ export class CommandStack implements ICommandStack {
 			throw new Error('Cannot redo an action that does not exist');
 		}
 		
-		let nextCommand = <ICommand>this.RedoHistory.pop();
+		let nextCommand = <IUndoRedoCommand>this.RedoHistory.pop();
 		nextCommand.Do();
 		this.CommandHistory.push(nextCommand);
 	}

@@ -1,4 +1,4 @@
-import { ICommandStack } from './undoredo/commandmanager.js';
+import { IUndoRedoCommandStack } from './undoredo/undoredocommandmanager.js';
 import { DraggableDropEffectsTypes, DraggableEffectAllowedTypes, DraggableEffectMoveTypes, DraggableEffectCopyTypes } from './dragdrop/dragdropdict.js';
 import { IInteractionContext } from "./interaction/interactioncontext.js";
 import { InteractionManager } from "./interaction/interactionmanager.js";
@@ -12,7 +12,7 @@ export class CanvasContext implements IInteractionContext {
 	private pasteHistory: string[] = [];
 	private selectedIndex: number | null = null;
 
-	constructor(public Id: string, uiManager: InteractionManager, private clipboardManager: ClipboardManager, private commandManager: ICommandStack) {
+	constructor(public Id: string, uiManager: InteractionManager, private clipboardManager: ClipboardManager, private commandManager: IUndoRedoCommandStack) {
 		this.pasteHistory.push("this line AAAA");
 		this.pasteHistory.push("this line BBBB");
 		this.pasteHistory.push("this line CCCC");

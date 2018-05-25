@@ -1,7 +1,7 @@
-import { ICommand } from "./command";
-import { CanvasContext } from "../canvascontext";
+import { CanvasContext } from './../canvascontext.js';
+import { IUndoRedoCommand } from './undoredocommand.js';
 
-export default class MoveTextCommand implements ICommand {
+export default class MoveTextCommand implements IUndoRedoCommand {
 	constructor(
 		private sourceIndex: number,
 		private destIndex: number,
