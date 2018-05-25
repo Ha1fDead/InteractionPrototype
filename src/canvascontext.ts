@@ -6,7 +6,8 @@ import { IInteractionContext } from "./interaction/interactioncontext.js";
 import { InteractionManager } from "./interaction/interactionmanager.js";
 import { DataTransferTypes } from './interaction/datatransfertypes.js';
 import ClipboardManager from './useractions/clipboard/clipboardmanager.js';
-import { IContextualAction } from './contextual/contextual.js';
+import IContextAction from './contextual/contextaction.js';
+import HelloWorldAction from './useractions/helloworldaction.js';
 
 export class CanvasContext implements IInteractionContext {
 	private pasteHistory: string[] = [];
@@ -77,7 +78,7 @@ export class CanvasContext implements IInteractionContext {
 		return this.pasteHistory.splice(index, 1)[0];
 	}
 
-	GetContextActions(): IContextualAction[] {
+	GetContextActions(): IContextAction[] {
 		/**
 		 * Context options for the canvas are non-trivial.
 		 * 
@@ -88,7 +89,14 @@ export class CanvasContext implements IInteractionContext {
 		 * This whole operation must be quickquickquick
 		 */
 
-		throw new Error("Method not implemented.");
+		 let actions: IContextAction[] = [];
+		 let helloWorldAction: IContextAction = {
+			 Name: "say hello",
+			 Action: new HelloWorldAction(),
+			 ActionList: null
+		 }
+		 actions.push(helloWorldAction);
+		 return actions;
 	}
 
     /**

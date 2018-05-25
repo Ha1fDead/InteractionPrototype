@@ -1,4 +1,4 @@
-import { CanvasContext } from './../canvascontext.js';
+import { CanvasContext } from './../../canvascontext.js';
 import { IUndoRedoCommand } from './undoredocommand.js';
 export default class RemoveTextCommand implements IUndoRedoCommand {
 	private removedText: string | null;

@@ -2,6 +2,7 @@ import { ClipboardDict } from './clipboarddict.js';
 import { InteractionManager } from '../../interaction/interactionmanager.js';
 import { DataTransferTypes } from '../../interaction/datatransfertypes.js';
 
+// the "external" clipboard controls need to be moved into the UI layer
 export default class ClipboardManager {
 	private internalClipboardData: DataTransfer | null;
 
