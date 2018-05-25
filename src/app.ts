@@ -3,7 +3,7 @@ import { IUndoRedoCommandStack, UndoRedoCommandStack } from './useractions/undor
 import { DraggableEffectAllowedTypes } from './dragdrop/dragdropdict.js';
 import { InteractionManager } from "./interaction/interactionmanager.js";
 import { CanvasContext } from "./canvascontext.js";
-import ClipboardManager from './clipboard/clipboardmanager.js';
+import ClipboardManager from './useractions/clipboard/clipboardmanager.js';
 import ContextManager from './contextual/contextmanager.js';
 
 class App {

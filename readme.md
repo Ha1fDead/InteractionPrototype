@@ -68,6 +68,8 @@ OS/browser/layout specific functionality should reside here
   - contextual
   - touchable
   - undoredo
+    - many different UI instances will invoke the "Undo" or "Redo" actions
+    - thus, it is not a UI decision but a UserAction itself that is derived from the UI
 
 Unknown architecture decisions:
 

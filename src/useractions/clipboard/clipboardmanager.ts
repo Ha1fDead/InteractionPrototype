@@ -1,6 +1,6 @@
 import { ClipboardDict } from './clipboarddict.js';
-import { InteractionManager } from './../interaction/interactionmanager.js';
-import { DataTransferTypes } from '../interaction/datatransfertypes.js';
+import { InteractionManager } from '../../interaction/interactionmanager.js';
+import { DataTransferTypes } from '../../interaction/datatransfertypes.js';
 
 export default class ClipboardManager {
 	private internalClipboardData: DataTransfer | null;

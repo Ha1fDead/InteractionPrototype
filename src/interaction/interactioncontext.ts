@@ -1,7 +1,7 @@
 import IDroppable from "../dragdrop/droppable.js";
 import IDragable from "../dragdrop/draggable.js";
-import { ICopyable } from "../clipboard/copyable.js";
-import IPasteable from "../clipboard/pasteable.js";
+import { ICopyable } from "../useractions/clipboard/copyable.js";
+import IPasteable from "../useractions/clipboard/pasteable.js";
 import { IContextual } from "../contextual/contextual.js";
 
 /**
