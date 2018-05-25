@@ -1,10 +1,10 @@
-import { ICommandStack } from './commands/commandmanager.js';
+import { ICommandStack } from './undoredo/commandmanager.js';
 import { DraggableDropEffectsTypes, DraggableEffectAllowedTypes, DraggableEffectMoveTypes, DraggableEffectCopyTypes } from './dragdrop/dragdropdict.js';
 import { IInteractionContext } from "./interaction/interactioncontext.js";
 import { InteractionManager } from "./interaction/interactionmanager.js";
 import { DataTransferTypes } from './interaction/datatransfertypes.js';
-import RemoveTextCommand from './commands/removetextcommand.js';
-import AddTextCommand from './commands/addtextcommand.js';
+import RemoveTextCommand from './undoredo/removetextcommand.js';
+import AddTextCommand from './undoredo/addtextcommand.js';
 import ClipboardManager from './clipboard/clipboardmanager.js';
 import { IContextualAction } from './contextual/contextual.js';
 
@@ -87,6 +87,7 @@ export class CanvasContext implements IInteractionContext {
 		 * 
 		 * This whole operation must be quickquickquick
 		 */
+
 		throw new Error("Method not implemented.");
 	}
 
