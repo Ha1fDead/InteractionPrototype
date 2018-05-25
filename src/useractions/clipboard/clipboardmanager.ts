@@ -1,11 +1,12 @@
 import { ClipboardDict } from './clipboarddict.js';
-import { InterfaceManager } from './../interfacemanager.js';
-import { DataTransferTypes } from '../datatransfertypes.js';
+import { InteractionManager } from '../../interaction/interactionmanager.js';
+import { DataTransferTypes } from '../../interaction/datatransfertypes.js';
 
+// the "external" clipboard controls need to be moved into the UI layer
 export default class ClipboardManager {
 	private internalClipboardData: DataTransfer | null;
 
-	constructor(private uiManager: InterfaceManager) {
+	constructor(private uiManager: InteractionManager) {
 		this.internalClipboardData = null;
 
 		// Why does the binding to "This" work within these methods?

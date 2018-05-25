@@ -1,17 +1,19 @@
-import { ICommandStack } from './commands/commandmanager.js';
-import { DraggableDropEffectsTypes, DraggableEffectAllowedTypes, DraggableEffectMoveTypes } from './dragdrop/dragdropdict.js';
-import { IInterfaceContext } from "./interfacecontext.js";
-import { InterfaceManager } from "./interfacemanager.js";
-import { DataTransferTypes } from './datatransfertypes.js';
-import RemoveTextCommand from './commands/removetextcommand.js';
-import AddTextCommand from './commands/addtextcommand.js';
-import ClipboardManager from './clipboard/clipboardmanager.js';
+import { IUndoRedoCommandStack } from './useractions/undoredo/undoredocommandmanager.js';
+import RemoveTextCommand from './useractions/undoredo/removetextcommand.js';
+import AddTextCommand from './useractions/undoredo/addtextcommand.js';
+import { DraggableDropEffectsTypes, DraggableEffectAllowedTypes, DraggableEffectMoveTypes, DraggableEffectCopyTypes } from './dragdrop/dragdropdict.js';
+import { IInteractionContext } from "./interaction/interactioncontext.js";
+import { InteractionManager } from "./interaction/interactionmanager.js";
+import { DataTransferTypes } from './interaction/datatransfertypes.js';
+import ClipboardManager from './useractions/clipboard/clipboardmanager.js';
+import IContextAction from './contextual/contextaction.js';
+import HelloWorldAction from './useractions/helloworldaction.js';
 
-export class CanvasContext implements IInterfaceContext {
+export class CanvasContext implements IInteractionContext {
 	private pasteHistory: string[] = [];
 	private selectedIndex: number | null = null;
 
-	constructor(public Id: string, uiManager: InterfaceManager, private clipboardManager: ClipboardManager, private commandManager: ICommandStack) {
+	constructor(public Id: string, uiManager: InteractionManager, private clipboardManager: ClipboardManager, private commandManager: IUndoRedoCommandStack) {
 		this.pasteHistory.push("this line AAAA");
 		this.pasteHistory.push("this line BBBB");
 		this.pasteHistory.push("this line CCCC");
@@ -76,6 +78,27 @@ export class CanvasContext implements IInterfaceContext {
 		return this.pasteHistory.splice(index, 1)[0];
 	}
 
+	GetContextActions(): IContextAction[] {
+		/**
+		 * Context options for the canvas are non-trivial.
+		 * 
+		 * 1. Get what is underneath the mouse in 3d space
+		 * 2. Get THAT objects contextual options
+		 * 3. return those
+		 * 
+		 * This whole operation must be quickquickquick
+		 */
+
+		 let actions: IContextAction[] = [];
+		 let helloWorldAction: IContextAction = {
+			 Name: "say hello",
+			 Action: new HelloWorldAction(),
+			 ActionList: null
+		 }
+		 actions.push(helloWorldAction);
+		 return actions;
+	}
+
     /**
      * The element's custom handled 'Cut' operation
      *
@@ -83,13 +106,11 @@ export class CanvasContext implements IInterfaceContext {
      */
 	HandleCut(): DataTransfer {
 		let data = new DataTransfer();
-		if(this.selectedIndex !== null) {
-			let text = this.pasteHistory[this.selectedIndex];
-			let removeTextCommand = new RemoveTextCommand(this, this.selectedIndex);
-			this.commandManager.PerformAction(removeTextCommand, false);
-			data.setData(DataTransferTypes.Text, text);
-		}
-		
+		let indexToUse = this.selectedIndex === null ? this.pasteHistory.length - 1 : this.selectedIndex;
+		let text = this.pasteHistory[indexToUse];
+		let removeTextCommand = new RemoveTextCommand(this, indexToUse);
+		this.commandManager.PerformAction(removeTextCommand, false);
+		data.setData(DataTransferTypes.Text, text);
 		return data;
 	}
 
@@ -126,7 +147,9 @@ export class CanvasContext implements IInterfaceContext {
 
 	HandleDrop(event: DragEvent): void {
 		event.preventDefault();
-		if(!DraggableEffectMoveTypes.includes(<DraggableEffectAllowedTypes>event.dataTransfer.effectAllowed)) {
+		let dropEffectAllowed = <DraggableEffectAllowedTypes>event.dataTransfer.effectAllowed;
+		if(!DraggableEffectMoveTypes.includes(dropEffectAllowed)
+		&& !DraggableEffectCopyTypes.includes(dropEffectAllowed)) {
 			console.log('dropped but the effect is not allowed', event.dataTransfer.effectAllowed);
 			return;
 		}
@@ -159,7 +182,7 @@ export class CanvasContext implements IInterfaceContext {
 		}
 
 		let index = this.selectedIndex === null ? this.pasteHistory.length - 1 : this.selectedIndex;
-
+		this.selectedIndex = null;
 		if(event.dataTransfer.dropEffect === DraggableDropEffectsTypes.Move) {
 			let removeTextCommand = new RemoveTextCommand(this, index);
 			this.commandManager.PerformAction(removeTextCommand, true);

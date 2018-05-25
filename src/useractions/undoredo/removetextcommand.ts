@@ -1,6 +1,6 @@
-import { CanvasContext } from './../canvascontext';
-import { ICommand } from './command.js';
-export default class RemoveTextCommand implements ICommand {
+import { CanvasContext } from './../../canvascontext.js';
+import { IUndoRedoCommand } from './undoredocommand.js';
+export default class RemoveTextCommand implements IUndoRedoCommand {
 	private removedText: string | null;
 	constructor(private sourceContext: CanvasContext, private textIndex: number) {
 		this.removedText = null;

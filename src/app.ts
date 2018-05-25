@@ -1,17 +1,23 @@
-import { ICommandStack, CommandStack } from './commands/commandmanager.js';
+import { TouchManager } from './touchable/touchmanager.js';
+import { IUndoRedoCommandStack, UndoRedoCommandStack } from './useractions/undoredo/undoredocommandmanager.js';
 import { DraggableEffectAllowedTypes } from './dragdrop/dragdropdict.js';
-import { InterfaceManager } from "./interfacemanager.js";
+import { InteractionManager } from "./interaction/interactionmanager.js";
 import { CanvasContext } from "./canvascontext.js";
-import ClipboardManager from './clipboard/clipboardmanager.js';
+import ClipboardManager from './useractions/clipboard/clipboardmanager.js';
+import ContextManager from './contextual/contextmanager.js';
 
 class App {
-	private CommandManager: ICommandStack;
-	private InterfaceManager: InterfaceManager;
+	private CommandManager: IUndoRedoCommandStack;
+	private InterfaceManager: InteractionManager;
 	private ClipboardManager: ClipboardManager;
+	private ContextManager: ContextManager;
+	private TouchManager: TouchManager;
 
 	constructor() {
-		this.CommandManager = new CommandStack();
-		this.InterfaceManager = new InterfaceManager(this.CommandManager);
+		this.CommandManager = new UndoRedoCommandStack();
+		this.InterfaceManager = new InteractionManager(this.CommandManager);
+		this.ContextManager = new ContextManager(this.InterfaceManager);
+		this.TouchManager = new TouchManager(this.ContextManager);
 		this.ClipboardManager = new ClipboardManager(this.InterfaceManager);
 	}
 
