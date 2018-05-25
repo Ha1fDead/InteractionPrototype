@@ -4,7 +4,7 @@
  * This would be bound from InterfaceContexts -- they would search for any "IContextual" under the mouse / button / thumb press and load the actions from there
  */
 export interface IContextual {
-	GetContextActions(): ICommand[];
+	GetContextActions(): IContextualAction[];
 }
 
 /**
@@ -41,7 +41,7 @@ export interface IContextAction {
 	/**
 	 * If this action is a single Action, then this is the action that will be performed when "Selected"
 	 */
-	Action: ICommand | null;
+	Action: IContextualAction | null;
 
 	/**
 	 * If this action is a list of actions, then clicking on it will open another context menu (or dropdown, or radial menu)
@@ -52,6 +52,6 @@ export interface IContextAction {
 /**
  * Actions are the same as Commands. Some commands will be undoable, others not.
  */
-export interface ICommand {
-
+export interface IContextualAction {
+	// even if all ContextualCommands create a copypaste command, they aren't initiated until the user actually clicks on the button
 }

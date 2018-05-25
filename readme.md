@@ -68,6 +68,35 @@ Some other nuances of cut, not all programs delete the "Cut" buffer.
 
 I believe my favoured implementations are #2 for both options.
 
+## Command Prototype
+
+Command Pattern, also known as Undo / Redo, has some interesting behaviors. I need to think about what is "Undoable" from a users perspective.
+
+Google Sheets:
+
+- Undo will switch your tab to that window, and then undo the item
+- Conditional formatting is undoable (whoda thunk)
+
+Valhalla:
+
+- Actor / Prop manipulation (placing, moving, resizing, scaling, etc.)
+- Resource expenditure (casting a spell, rolling hit dice)
+- Entire AI turns
+- Player actions (doing damage, casting a spell, etc.)
+- Drawing (for drawing tools)
+- UI management (open window, close window, minimize window)
+
+What shouldn't be undoable:
+
+- System Configuration
+
+Behaviors / Unkowns:
+
+- User moves something, changes the health, and moves it again. Should two undos undo the move actions or the move and health change?
+- Can the GM undo player actions?
+- Can the players undo GM actions?
+- What about item transferrence (player drops item, player #2 picks it up, player #1 undoes action)
+
 ## Browser Behaviors
 
 Regarding the asynchronous APIs, it appears that (in Chrome)

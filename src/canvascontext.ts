@@ -6,6 +6,7 @@ import { DataTransferTypes } from './interaction/datatransfertypes.js';
 import RemoveTextCommand from './commands/removetextcommand.js';
 import AddTextCommand from './commands/addtextcommand.js';
 import ClipboardManager from './clipboard/clipboardmanager.js';
+import { IContextualAction } from './contextual/contextual.js';
 
 export class CanvasContext implements IInteractionContext {
 	private pasteHistory: string[] = [];
@@ -74,6 +75,19 @@ export class CanvasContext implements IInteractionContext {
 
 	public RemoveText(index: number): string {
 		return this.pasteHistory.splice(index, 1)[0];
+	}
+
+	GetContextActions(): IContextualAction[] {
+		/**
+		 * Context options for the canvas are non-trivial.
+		 * 
+		 * 1. Get what is underneath the mouse in 3d space
+		 * 2. Get THAT objects contextual options
+		 * 3. return those
+		 * 
+		 * This whole operation must be quickquickquick
+		 */
+		throw new Error("Method not implemented.");
 	}
 
     /**
