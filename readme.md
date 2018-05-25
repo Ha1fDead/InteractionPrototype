@@ -38,10 +38,7 @@ My overall architecture, derived from this prototype, should be:
 - Game space shouldn't have any knowledge of UI, I think, for clean separation
 - UI will get a little messy, that's fine
 
-houses core UX and interfacing with browsers and browser events
-OS/browser/layout specific functionality should reside here
-
-(All of the below are nested under a "UI" folder)
+Structure:
 
 - Data (Responsible for storage, network communication of game logic, etc.)
 - GameLogic (Repsonsible for core game rules, interacting with actors, taking damage, taking turns, etc.)
