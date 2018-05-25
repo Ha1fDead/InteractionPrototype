@@ -84,14 +84,15 @@ Valhalla:
 - Entire AI turns
 - Player actions (doing damage, casting a spell, etc.)
 - Drawing (for drawing tools)
-- UI management (open window, close window, minimize window)
 
 What shouldn't be undoable:
 
 - System Configuration
+- UI management (open window, close window, minimize window)
 
 Behaviors / Unkowns:
 
+- If the user "undos" or "redos" an action centered on a window that has been closed or minimized, the undo/redo should attempt to re-open / maximize that window.
 - User moves something, changes the health, and moves it again. Should two undos undo the move actions or the move and health change?
 - Can the GM undo player actions?
 - Can the players undo GM actions?
