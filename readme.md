@@ -62,6 +62,9 @@ OS/browser/layout specific functionality should reside here
     - RosterTracker
   - draganddrop
   - clipboard
+    - Should the clipboard be in the UI layer?
+    - thinking about it more succinctly, this is kindof halfway between a "UserAction" and the "UI
+    - exact same thing with undoredo
   - contextual
   - touchable
   - undoredo

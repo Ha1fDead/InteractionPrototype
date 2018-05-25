@@ -1,5 +1,5 @@
 import { TouchManager } from './touchable/touchmanager.js';
-import { IUndoRedoCommandStack, UndoRedoCommandStack } from './undoredo/undoredocommandmanager.js';
+import { IUndoRedoCommandStack, UndoRedoCommandStack } from './useractions/undoredo/undoredocommandmanager.js';
 import { DraggableEffectAllowedTypes } from './dragdrop/dragdropdict.js';
 import { InteractionManager } from "./interaction/interactionmanager.js";
 import { CanvasContext } from "./canvascontext.js";

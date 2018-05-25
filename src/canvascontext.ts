@@ -1,10 +1,10 @@
-import { IUndoRedoCommandStack } from './undoredo/undoredocommandmanager.js';
+import { IUndoRedoCommandStack } from './useractions/undoredo/undoredocommandmanager.js';
+import RemoveTextCommand from './useractions/undoredo/removetextcommand.js';
+import AddTextCommand from './useractions/undoredo/addtextcommand.js';
 import { DraggableDropEffectsTypes, DraggableEffectAllowedTypes, DraggableEffectMoveTypes, DraggableEffectCopyTypes } from './dragdrop/dragdropdict.js';
 import { IInteractionContext } from "./interaction/interactioncontext.js";
 import { InteractionManager } from "./interaction/interactionmanager.js";
 import { DataTransferTypes } from './interaction/datatransfertypes.js';
-import RemoveTextCommand from './undoredo/removetextcommand.js';
-import AddTextCommand from './undoredo/addtextcommand.js';
 import ClipboardManager from './clipboard/clipboardmanager.js';
 import { IContextualAction } from './contextual/contextual.js';
 
