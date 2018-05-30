@@ -6,5 +6,8 @@ import IContextAction from './contextaction.js';
  * This would be bound from InterfaceContexts -- they would search for any "IContextual" under the mouse / button / thumb press and load the actions from there
  */
 export interface IContextual {
+    /**
+     * Retrieves the eligible actions that a user can perform on this interactive element
+     */
 	GetContextActions(): IContextAction[];
 }
