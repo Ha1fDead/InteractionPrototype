@@ -43,9 +43,9 @@ export default class ContextManager {
 			// let normal context menu proceed
 			return;
 		}
-		event.preventDefault();
 
 		if(this.ShouldSpawnContextMenu(event.target)) {
+			event.preventDefault();
 			this.SpawnContextMenu(event.pageX, event.pageY);
 		}
 	}

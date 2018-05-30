@@ -115,6 +115,11 @@ Some other nuances of cut, not all programs delete the "Cut" buffer.
 
 I believe my favoured implementations are #2 for both options.
 
+Should Cut:
+
+1. After pasting a cut action, should the clipboard be cleared?
+2. Should you be able to "Cut" multiple times without an associated paste?
+
 ## Undo/Redo Command Prototype
 
 Command Pattern, also known as Undo / Redo, has some interesting behaviors. I need to think about what is "Undoable" from a users perspective.
