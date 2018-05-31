@@ -1,5 +1,5 @@
 import IContextAction from "./contextaction.js";
-import IUserAction from "../useractions/useraction";
+import IUserAction from "../../useractions/useraction";
 
 interface CustomElement {
 	connectedCallback(): void;

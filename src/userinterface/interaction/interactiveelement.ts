@@ -1,10 +1,10 @@
 import { IContextual } from './../contextual/contextual.js';
-import { ICopyable } from './../useractions/clipboard/copyable.js';
-import IDragable from '../dragdrop/draggable.js';
-import IUserAction from '../useractions/useraction.js';
 import IContextAction from '../contextual/contextaction.js';
+import IDragable from '../dragdrop/draggable.js';
 import { DataTransferTypes } from './datatransfertypes.js';
-import HelloWorldAction from '../useractions/helloworldaction.js';
+import IUserAction from '../../useractions/useraction.js';
+import { ICopyable } from '../../useractions/clipboard/copyable.js';
+import HelloWorldAction from '../../useractions/helloworldaction.js';
 
 /**
  * Interactive Elements are the core "Visual" element of the system. Essentially anything that can be "Rendered" in both the Canvas and HTML is an Interactive Item

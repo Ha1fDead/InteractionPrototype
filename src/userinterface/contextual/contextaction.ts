@@ -1,4 +1,4 @@
-import IUserAction from "../useractions/useraction.js";
+import IUserAction from "../../useractions/useraction.js";
 
 /**
  * A contextual action, which is rendered in the "ContextMenu"

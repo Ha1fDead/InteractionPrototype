@@ -1,13 +1,13 @@
-import { IUndoRedoCommandStack } from './useractions/undoredo/undoredocommandmanager.js';
-import RemoveTextCommand from './useractions/undoredo/removetextcommand.js';
-import AddTextCommand from './useractions/undoredo/addtextcommand.js';
+import { IUndoRedoCommandStack } from '../useractions/undoredo/undoredocommandmanager.js';
+import RemoveTextCommand from '../useractions/undoredo/removetextcommand.js';
+import AddTextCommand from '../useractions/undoredo/addtextcommand.js';
 import { DraggableDropEffectsTypes, DraggableEffectAllowedTypes, DraggableEffectMoveTypes, DraggableEffectCopyTypes } from './dragdrop/dragdropdict.js';
 import { IInteractionContext } from "./interaction/interactioncontext.js";
 import { InteractionManager } from "./interaction/interactionmanager.js";
 import { DataTransferTypes } from './interaction/datatransfertypes.js';
-import ClipboardManager from './useractions/clipboard/clipboardmanager.js';
+import ClipboardManager from '../useractions/clipboard/clipboardmanager.js';
 import IContextAction from './contextual/contextaction.js';
-import HelloWorldAction from './useractions/helloworldaction.js';
+import HelloWorldAction from '../useractions/helloworldaction.js';
 import { InteractiveElement, IInteractiveElement } from './interaction/interactiveelement.js';
 
 export class CanvasContext implements IInteractionContext {

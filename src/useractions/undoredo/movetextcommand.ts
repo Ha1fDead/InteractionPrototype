@@ -1,4 +1,4 @@
-import { CanvasContext } from './../../canvascontext.js';
+import { CanvasContext } from '../../userinterface/canvascontext.js';
 import { IUndoRedoCommand } from './undoredocommand.js';
 
 export default class MoveTextCommand implements IUndoRedoCommand {

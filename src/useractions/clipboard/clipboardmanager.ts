@@ -1,7 +1,8 @@
-import { IInteractiveElement } from './../../interaction/interactiveelement';
 import { ClipboardDict } from './clipboarddict.js';
-import { InteractionManager } from '../../interaction/interactionmanager.js';
-import { DataTransferTypes } from '../../interaction/datatransfertypes.js';
+// THIS IS BAD -- NEED TO FIGURE OUT A BETTER PLACE TO PUT THESE THINGS
+import { IInteractiveElement } from '../../userinterface/interaction/interactiveelement';
+import { InteractionManager } from '../../userinterface/interaction/interactionmanager.js';
+import { DataTransferTypes } from '../../userinterface/interaction/datatransfertypes.js';
 
 // the "external" clipboard controls need to be moved into the UI layer
 export default class ClipboardManager {

@@ -1,10 +1,10 @@
-import { TouchManager } from './touchable/touchmanager.js';
-import { IUndoRedoCommandStack, UndoRedoCommandStack } from './useractions/undoredo/undoredocommandmanager.js';
-import { DraggableEffectAllowedTypes } from './dragdrop/dragdropdict.js';
-import { InteractionManager } from "./interaction/interactionmanager.js";
-import { CanvasContext } from "./canvascontext.js";
+import { TouchManager } from './userinterface/touchable/touchmanager.js';
+import { DraggableEffectAllowedTypes } from './userinterface/dragdrop/dragdropdict.js';
+import { InteractionManager } from "./userinterface/interaction/interactionmanager.js";
+import { CanvasContext } from "./userinterface/canvascontext.js";
+import ContextManager from './userinterface/contextual/contextmanager.js';
 import ClipboardManager from './useractions/clipboard/clipboardmanager.js';
-import ContextManager from './contextual/contextmanager.js';
+import { IUndoRedoCommandStack, UndoRedoCommandStack } from './useractions/undoredo/undoredocommandmanager.js';
 
 class App {
 	private CommandManager: IUndoRedoCommandStack;
