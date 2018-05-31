@@ -71,11 +71,12 @@ export default class ClipboardManager {
 		}
 
 		event.preventDefault();
-		let ctxCopiedData = activeSelection.GetDataTransfer();
-		if(ctxCopiedData.items.length <= 0) {
+		let copiedData = new DataTransfer();
+		activeSelection.PopulateDataTransfer(copiedData);
+		if(copiedData.items.length <= 0) {
 			return;
 		}
-		this.internalClipboardData = ctxCopiedData;
+		this.internalClipboardData = copiedData;
 		this.AttemptCopyClipboardData(this.internalClipboardData);
 	}
 
@@ -110,11 +111,12 @@ export default class ClipboardManager {
 			return;
 		}
 
-		let ctxCopiedData = activeSelection.GetDataTransfer();
-		if(ctxCopiedData.items.length <= 0) {
+		let copiedData = new DataTransfer();
+		activeSelection.PopulateDataTransfer(copiedData);
+		if(copiedData.items.length <= 0) {
 			return;
 		}
-		this.internalClipboardData = ctxCopiedData;
+		this.internalClipboardData = copiedData;
 		this.AttemptCopyClipboardData(this.internalClipboardData);
 	}
 

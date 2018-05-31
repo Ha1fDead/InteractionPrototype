@@ -31,7 +31,7 @@ export interface IInteractiveElement extends IDragable, IContextual {
 	/**
 	 * Used for drag and drop, copy + paste actions
 	 */
-	GetDataTransfer(): DataTransfer;
+	PopulateDataTransfer(dataTransfer: DataTransfer): void;
 }
 
 export class InteractiveElement implements IInteractiveElement {
@@ -49,12 +49,9 @@ export class InteractiveElement implements IInteractiveElement {
 		actions.push(helloWorldAction);
 		return actions;
 	}
-
-	// TODO -- "Drag" needs to populate a data transfer object, so it would make more sense to take one in here
-	GetDataTransfer(): DataTransfer {
-		let data = new DataTransfer();
-		data.setData(DataTransferTypes.Text, this.text);
-		return data;
+	
+	PopulateDataTransfer(dataTransfer: DataTransfer): void {
+		dataTransfer.setData(DataTransferTypes.Text, this.text);
 	}
 
 	// should this be a drag behavior?

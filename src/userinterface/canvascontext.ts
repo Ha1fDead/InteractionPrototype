@@ -110,10 +110,10 @@ export class CanvasContext implements IInteractionContext {
 	HandleCut(): DataTransfer {
 		let data = new DataTransfer();
 		let indexToUse = this.selectedIndex === null ? this.interactiveElements.length - 1 : this.selectedIndex;
-		let text = this.interactiveElements[indexToUse];
+		let cutElement = this.interactiveElements[indexToUse];
 		let removeTextCommand = new RemoveTextCommand(this.textStore, indexToUse);
 		this.commandManager.PerformAction(removeTextCommand, false);
-		data.setData(DataTransferTypes.Text, text.text);
+		cutElement.PopulateDataTransfer(data);
 		return data;
 	}
 
@@ -123,11 +123,12 @@ export class CanvasContext implements IInteractionContext {
      * This method should make a copy of the data in a DataTransfer object so it can be replicated at-will from the user
      */
 	HandleCopy(): DataTransfer {
-		if(this.selectedIndex === null) {
-			return new DataTransfer();
+		let transfer = new DataTransfer();
+		if(this.selectedIndex !== null) {
+			this.interactiveElements[this.selectedIndex].PopulateDataTransfer(transfer);
 		}
 
-		return this.interactiveElements[this.selectedIndex].GetDataTransfer();
+		return transfer;
 	}
 
     /**
@@ -173,8 +174,7 @@ export class CanvasContext implements IInteractionContext {
 		}
 
 		let indexToUse = this.selectedIndex === null ? this.interactiveElements.length - 1 : this.selectedIndex;
-
-		event.dataTransfer.setData(DataTransferTypes.Text, this.interactiveElements[indexToUse].text);
+		this.interactiveElements[indexToUse].PopulateDataTransfer(event.dataTransfer);
 		event.dataTransfer.effectAllowed = DraggableEffectAllowedTypes.All;
 		event.dataTransfer.dropEffect = DraggableDropEffectsTypes.Move;
 	}
