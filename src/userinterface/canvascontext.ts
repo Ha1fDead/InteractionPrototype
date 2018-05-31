@@ -9,7 +9,7 @@ import ClipboardManager from '../useractions/clipboard/clipboardmanager.js';
 import IContextAction from './contextual/contextaction.js';
 import HelloWorldAction from '../useractions/helloworldaction.js';
 import { InteractiveElement, IInteractiveElement } from './interaction/interactiveelement.js';
-import TextStore from '../data/store.js';
+import TextStore from '../data/textstore.js';
 
 export class CanvasContext implements IInteractionContext {
 	private selectedIndex: number | null = null;

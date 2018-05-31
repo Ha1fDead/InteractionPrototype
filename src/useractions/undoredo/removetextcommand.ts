@@ -1,5 +1,5 @@
 import { IUndoRedoCommand } from './undoredocommand.js';
-import TextStore from '../../data/store.js';
+import TextStore from '../../data/textstore.js';
 export default class RemoveTextCommand implements IUndoRedoCommand {
 	private removedText: string | null;
 	constructor(private textStore: TextStore, private textIndex: number) {
