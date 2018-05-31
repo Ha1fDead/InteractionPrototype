@@ -5,7 +5,7 @@ import { CanvasContext } from "./userinterface/canvascontext.js";
 import ContextManager from './userinterface/contextual/contextmanager.js';
 import ClipboardManager from './useractions/clipboard/clipboardmanager.js';
 import { IUndoRedoCommandStack, UndoRedoCommandStack } from './useractions/undoredo/undoredocommandmanager.js';
-import TextStore from './data/store.js';
+import TextStore from './data/textstore.js';
 
 class App {
 	private CommandManager: IUndoRedoCommandStack;
