@@ -1,15 +1,15 @@
-import { CanvasContext } from '../../userinterface/canvascontext.js';
 import { IUndoRedoCommand } from './undoredocommand.js';
+import TextStore from '../../data/store.js';
 
 export default class AddTextCommand implements IUndoRedoCommand {
-	constructor(private sourceContext: CanvasContext, private textToAdd: string, private textIndex: number) {
+	constructor(private textStore: TextStore, private textToAdd: string, private textIndex: number) {
 
 	}
 
 	Do(): void {
-		this.sourceContext.AddText(this.textToAdd, this.textIndex);
+		this.textStore.InsertData(this.textIndex, this.textToAdd);
 	}
 	Undo(): void {
-		this.sourceContext.RemoveText(this.textIndex);
+		this.textStore.RemoveData(this.textIndex);
 	}
 }

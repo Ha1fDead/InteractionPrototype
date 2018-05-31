@@ -1,6 +1,7 @@
 import { CanvasContext } from '../../userinterface/canvascontext.js';
 import { IUndoRedoCommand } from './undoredocommand.js';
 
+// HOW
 export default class MoveTextCommand implements IUndoRedoCommand {
 	constructor(
 		private sourceIndex: number,

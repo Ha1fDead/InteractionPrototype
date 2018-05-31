@@ -35,7 +35,7 @@ export interface IInteractiveElement extends IDragable, IContextual {
 }
 
 export class InteractiveElement implements IInteractiveElement {
-	constructor(private text: string) {
+	constructor(public text: string) {
 
 	}
 
@@ -50,6 +50,7 @@ export class InteractiveElement implements IInteractiveElement {
 		return actions;
 	}
 
+	// TODO -- "Drag" needs to populate a data transfer object, so it would make more sense to take one in here
 	GetDataTransfer(): DataTransfer {
 		let data = new DataTransfer();
 		data.setData(DataTransferTypes.Text, this.text);

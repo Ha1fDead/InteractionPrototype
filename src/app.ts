@@ -5,6 +5,7 @@ import { CanvasContext } from "./userinterface/canvascontext.js";
 import ContextManager from './userinterface/contextual/contextmanager.js';
 import ClipboardManager from './useractions/clipboard/clipboardmanager.js';
 import { IUndoRedoCommandStack, UndoRedoCommandStack } from './useractions/undoredo/undoredocommandmanager.js';
+import TextStore from './data/store.js';
 
 class App {
 	private CommandManager: IUndoRedoCommandStack;
@@ -12,8 +13,17 @@ class App {
 	private ClipboardManager: ClipboardManager;
 	private ContextManager: ContextManager;
 	private TouchManager: TouchManager;
+	private textStore: TextStore;
 
 	constructor() {
+		this.textStore = new TextStore();
+
+		this.textStore.InsertData(this.textStore.GetDataLength(), "this line A");
+		this.textStore.InsertData(this.textStore.GetDataLength(), "this line B");
+		this.textStore.InsertData(this.textStore.GetDataLength(), "this line C");
+		this.textStore.InsertData(this.textStore.GetDataLength(), "this line D");
+		this.textStore.InsertData(this.textStore.GetDataLength(), "this line E");
+
 		this.CommandManager = new UndoRedoCommandStack();
 		this.InterfaceManager = new InteractionManager(this.CommandManager);
 		this.ContextManager = new ContextManager(this.InterfaceManager);
@@ -22,8 +32,8 @@ class App {
 	}
 
 	Run(): void {
-		let canvasListener1 = new CanvasContext('prototypeCanvas1', this.InterfaceManager, this.ClipboardManager, this.CommandManager);
-		let canvasListener2 = new CanvasContext('prototypeCanvas2', this.InterfaceManager, this.ClipboardManager, this.CommandManager);
+		let canvasListener1 = new CanvasContext('prototypeCanvas1', this.InterfaceManager, this.ClipboardManager, this.CommandManager, this.textStore);
+		let canvasListener2 = new CanvasContext('prototypeCanvas2', this.InterfaceManager, this.ClipboardManager, this.CommandManager, this.textStore);
 
 		let dragElement1 = <HTMLElement>document.getElementById('drag1');
 		dragElement1.ondragstart = (dragEvent: DragEvent) => {
