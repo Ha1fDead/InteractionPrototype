@@ -8,6 +8,7 @@ import { DataTransferTypes } from './interaction/datatransfertypes.js';
 import ClipboardManager from './useractions/clipboard/clipboardmanager.js';
 import IContextAction from './contextual/contextaction.js';
 import HelloWorldAction from './useractions/helloworldaction.js';
+import { InteractiveElement, IInteractiveElement } from './interaction/interactiveelement.js';
 
 export class CanvasContext implements IInteractionContext {
 	private pasteHistory: string[] = [];
@@ -27,13 +28,13 @@ export class CanvasContext implements IInteractionContext {
 		
 		canvas.onmousedown = (ev: MouseEvent) => {
 			if(ev.shiftKey) {
-				clipboardManager.OnInternalCopy();
+				clipboardManager.OnContextCopy();
 			}
 			if(ev.ctrlKey) {
-				clipboardManager.OnInternalCut();
+				clipboardManager.OnContextCut();
 			}
 			if(ev.altKey) {
-				clipboardManager.OnInternalPaste();
+				clipboardManager.OnContextPaste();
 			}
 
 			let potentialIndex = Math.floor(ev.y / 50);
@@ -201,6 +202,14 @@ export class CanvasContext implements IInteractionContext {
 	}
 	HandleDragLeave(event: DragEvent): void {
 		event.dataTransfer.dropEffect = DraggableDropEffectsTypes.None;
+	}
+	
+	GetActiveSelection(): IInteractiveElement | null {
+		if(this.selectedIndex !== null) {
+			return new InteractiveElement(this.pasteHistory[this.selectedIndex]);
+		}
+		
+		return null;
 	}
 
 	public Draw(): void {

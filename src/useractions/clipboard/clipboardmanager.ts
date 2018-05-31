@@ -1,3 +1,4 @@
+import { IInteractiveElement } from './../../interaction/interactiveelement';
 import { ClipboardDict } from './clipboarddict.js';
 import { InteractionManager } from '../../interaction/interactionmanager.js';
 import { DataTransferTypes } from '../../interaction/datatransfertypes.js';
@@ -58,8 +59,8 @@ export default class ClipboardManager {
 			throw new Error('All external clipboard events must be trusted.');
 		}
 
-		let activeContext = this.uiManager.FindActiveContext();
-		if(activeContext === null) {
+		let activeSelection = this.uiManager.FindActiveContextSelection();
+		if(activeSelection === null) {
 			// To support External -> Internal paste, I will have to manually convert the copy types
 			// Is there a way to do this natively?
 			
@@ -69,16 +70,16 @@ export default class ClipboardManager {
 		}
 
 		event.preventDefault();
-		let ctxCopiedData = activeContext.HandleCopy();
+		let ctxCopiedData = activeSelection.GetDataTransfer();
 		if(ctxCopiedData.items.length <= 0) {
 			return;
 		}
 		this.internalClipboardData = ctxCopiedData;
-		this.AttemptCopyClipboardData(this.internalClipboardData, event);
+		this.AttemptCopyClipboardData(this.internalClipboardData);
 	}
 
 	/**
-	 * Internal Copy is fired when we do not have a browser-specific copy context. 
+	 * Context Copy is fired when we do not have a browser-specific copy context. 
 	 * 
 	 * Fired: `right-click -> copy` in a canvas or any other non-native elements that custom clipboard code must be bound to
 	 * 
@@ -101,14 +102,14 @@ export default class ClipboardManager {
 	 * 2. User copies text within app (without using browser-level copy like ctrl-c)
 	 * 3. User pastes text outside of app, which is the same text as #2
 	 */
-	OnInternalCopy(): void {
-		let activeContext = this.uiManager.FindActiveContext();
-		if(activeContext === null) {
+	OnContextCopy(): void {
+		let activeSelection = this.uiManager.FindActiveContextSelection();
+		if(activeSelection === null) {
 			this.internalClipboardData = null;
 			return;
 		}
 
-		let ctxCopiedData = activeContext.HandleCopy();
+		let ctxCopiedData = activeSelection.GetDataTransfer();
 		if(ctxCopiedData.items.length <= 0) {
 			return;
 		}
@@ -152,7 +153,7 @@ export default class ClipboardManager {
 			return;
 		}
 		this.internalClipboardData = ctxCutData;
-		this.AttemptCopyClipboardData(this.internalClipboardData, event);
+		this.AttemptCopyClipboardData(this.internalClipboardData);
 	}
 
 	/**
@@ -167,7 +168,7 @@ export default class ClipboardManager {
 	 * 3a. Fire a "Cut" action and push onto the command stack
 	 * 3b. Remove the "Selected" element, copy the element into the internal clipboard, and ATTEMPT to copy the element into the external clipboard
 	 */
-	OnInternalCut(): void {
+	OnContextCut(): void {
 		let activeContext = this.uiManager.FindActiveContext();
 		if(activeContext === null) {
 			this.internalClipboardData = null;
@@ -236,7 +237,7 @@ export default class ClipboardManager {
 	 * 2. Find the component that the paste should be triggered into
 	 * 3. Fire a "Paste" action into the command stack with the most-recent "copied" item
 	 */
-	OnInternalPaste(): void {
+	OnContextPaste(): void {
 		if(this.internalClipboardData == null) {
 			return;
 		}
@@ -249,7 +250,7 @@ export default class ClipboardManager {
 		activeContext.HandlePaste(this.internalClipboardData);
 	}
 
-	async AttemptCopyClipboardData(data: DataTransfer, event?: ClipboardEvent): Promise<void> {
+	async AttemptCopyClipboardData(data: DataTransfer): Promise<void> {
 		/**
 		 * Note: Chrome does not currently support arbitrary "Write" operations
 		 * 

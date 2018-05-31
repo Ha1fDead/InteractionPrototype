@@ -3,9 +3,11 @@ import IDragable from "../dragdrop/draggable.js";
 import { ICopyable } from "../useractions/clipboard/copyable.js";
 import IPasteable from "../useractions/clipboard/pasteable.js";
 import { IContextual } from "../contextual/contextual.js";
+import { IInteractiveElement } from "./interactiveelement.js";
+import ICutable from "../useractions/clipboard/cutable.js";
 
 /**
- * Interface Contexts are used to bind DOM functionality into virtual elements, such as:
+ * Interactive Contexts are glue layers to give native functionality to all of my components, such as:
  * 
  * 1. Clipboard copy / cut / paste
  * 2. Local undo/redo (unsupported atm)
@@ -19,9 +21,16 @@ import { IContextual } from "../contextual/contextual.js";
  * 1. Character Sheet (multiple sheets can be loaded at one time)
  * 2. Canvas / Scene (could potentially have multiple scenes open at any time)
  */
-export interface IInteractionContext extends IDroppable, IDragable, ICopyable, IPasteable, IContextual {
+export interface IInteractionContext extends IDroppable, IDragable, ICopyable, IPasteable, ICutable, IContextual {
 	/**
 	 * The Id of the DOM element that you want to bind the InterfaceContext to
 	 */
 	Id: string;
+
+	/**
+	 * Returns the active interactive element, or null if there is none
+	 * 
+	 * In the future, this will return a "Selection" which contains the interactive element
+	 */
+	GetActiveSelection(): IInteractiveElement | null;
 }

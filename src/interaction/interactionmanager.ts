@@ -1,3 +1,4 @@
+import { IInteractiveElement } from './interactiveelement';
 import { IUndoRedoCommandStack } from '../useractions/undoredo/undoredocommandmanager.js';
 import { IInteractionContext } from "./interactioncontext.js";
 import { DraggableDropEffectsTypes, DraggableEffectAllowedTypes } from "../dragdrop/dragdropdict.js";
@@ -67,5 +68,14 @@ export class InteractionManager {
 		}
 
 		return activeContext;
+	}
+
+	public FindActiveContextSelection(): IInteractiveElement | null {
+		let activeContext = this.FindActiveContext();
+		if(activeContext === null) {
+			return null;
+		}
+
+		return activeContext.GetActiveSelection();
 	}
 }
