@@ -1,11 +1,10 @@
-export default class TextStore {
+import VDataStore from "./store.js";
+
+export default class TextStore extends VDataStore {
 	private Data: string[] = [];
 
-	// eventually I think this will change to using observables RxJs
-	private UpdateCallbacks: Function[] = [];
-
 	constructor() {
-
+		super();
 	}
 
 	/**
@@ -47,15 +46,5 @@ export default class TextStore {
 
 	GetDataLength(): number {
 		return this.Data.length;
-	}
-
-	AddCallback(cb: Function): void {
-		this.UpdateCallbacks.push(cb);
-	}
-
-	private BroadcastUpdates(): void {
-		for(let cb of this.UpdateCallbacks) {
-			cb();
-		}
 	}
 }

@@ -11,8 +11,6 @@ interface CustomElement {
 	attributeChangedCallback(): void;
 }
 
-// step 1, display absolute and move with mouse
-
 const template = document.createElement('template');
 template.innerHTML = `
 	<ul>
