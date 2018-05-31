@@ -41,6 +41,7 @@ export class InteractiveElement implements IInteractiveElement {
 
 	GetContextActions(): IContextAction[] {
 		let actions: IContextAction[] = [];
+		// cut, copy, paste
 		let helloWorldAction: IContextAction = {
 			Name: "say hello",
 			Action: new HelloWorldAction(),
@@ -49,7 +50,7 @@ export class InteractiveElement implements IInteractiveElement {
 		actions.push(helloWorldAction);
 		return actions;
 	}
-	
+
 	PopulateDataTransfer(dataTransfer: DataTransfer): void {
 		dataTransfer.setData(DataTransferTypes.Text, this.text);
 	}

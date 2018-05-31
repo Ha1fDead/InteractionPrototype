@@ -52,6 +52,8 @@ export default class ContextManager {
 
 	/**
 	 * Given a target element, determines if the context menu should spawn
+	 * 
+	 * BUG: If you right click on a context menu, the event is not prevented
 	 */
 	private ShouldSpawnContextMenu(target: EventTarget | null): boolean {
 		// Create context menu if the right click is not already on a context menu
@@ -63,14 +65,7 @@ export default class ContextManager {
 			return false;
 		}
 
-		// this would break if user right clicks on context menu and there is no selection
-		let activeContext = this.interactionManager.FindActiveContext();
-		if(activeContext === null) {
-			return false;
-		}
-
-		let activeSelection = activeContext.GetActiveSelection();
-		return activeSelection !== null;
+		return this.interactionManager.FindActiveContext() !== null;
 	}
 
 	private SpawnContextMenu(positionX: number, positionY: number): void {
@@ -84,16 +79,17 @@ export default class ContextManager {
 		contextMenu.style.top = positionY.toString();
 		contextMenu.style.left = positionX.toString();
 
-		// Note: This breaks if I want to just right click on Canvas and get default options
 		let activeContext = this.interactionManager.FindActiveContext();
 		if(activeContext === null) {
-			throw new Error();
+			throw new Error('Cannot open a context menu if there is no active context.');
 		}
 		let activeSelection = activeContext.GetActiveSelection();
 		if(activeSelection === null) {
-			throw new Error();
+			contextMenu.actions = activeContext.GetContextActions();
+		} else {
+			contextMenu.actions = activeSelection.GetContextActions();
 		}
-		contextMenu.actions = activeSelection.GetContextActions();
+
 		mainElement.appendChild(contextMenu);
 	}
 }

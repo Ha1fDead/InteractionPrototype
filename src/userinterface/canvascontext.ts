@@ -92,6 +92,7 @@ export class CanvasContext implements IInteractionContext {
 		 * This whole operation must be quickquickquick
 		 */
 
+		 // hello world only
 		 let actions: IContextAction[] = [];
 		 let helloWorldAction: IContextAction = {
 			 Name: "say hello",
