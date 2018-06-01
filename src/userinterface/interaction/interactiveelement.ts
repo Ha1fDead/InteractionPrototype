@@ -7,6 +7,7 @@ import { ICopyable } from '../../useractions/clipboard/copyable.js';
 import HelloWorldAction from '../../useractions/helloworldaction.js';
 import CopyUserAction from '../../useractions/copyaction.js';
 import ClipboardManager from '../../useractions/clipboard/clipboardmanager.js';
+import CutUserAction from '../../useractions/cutaction.js';
 
 /**
  * Interactive Elements are the core "Visual" element of the system. Essentially anything that can be "Rendered" in both the Canvas and HTML is an Interactive Item
@@ -42,15 +43,20 @@ export class InteractiveElement implements IInteractiveElement {
 	}
 
 	GetContextActions(): IContextAction[] {
-		let actions: IContextAction[] = [];
-		// cut, copy, paste
-		let helloWorldAction: IContextAction = {
+		let copyAction: IContextAction = {
 			Name: "Copy",
-			// bind is not working here, 'this' reference is bad
 			Action: new CopyUserAction(this.clipboardManager),
 			ActionList: null
 		};
-		actions.push(helloWorldAction);
+		let cutAction: IContextAction = {
+			Name: "Cut",
+			Action: new CutUserAction(this.clipboardManager),
+			ActionList: null
+		};
+		let actions: IContextAction[] = [
+			copyAction,
+			cutAction
+		];
 		return actions;
 	}
 

@@ -10,6 +10,7 @@ import IContextAction from './contextual/contextaction.js';
 import HelloWorldAction from '../useractions/helloworldaction.js';
 import { InteractiveElement, IInteractiveElement } from './interaction/interactiveelement.js';
 import TextStore from '../data/textstore.js';
+import PasteUserAction from '../useractions/pasteaction.js';
 
 export class CanvasContext implements IInteractionContext {
 	private selectedIndex: number | null = null;
@@ -82,24 +83,13 @@ export class CanvasContext implements IInteractionContext {
 	}
 
 	GetContextActions(): IContextAction[] {
-		/**
-		 * Context options for the canvas are non-trivial.
-		 * 
-		 * 1. Get what is underneath the mouse in 3d space
-		 * 2. Get THAT objects contextual options
-		 * 3. return those
-		 * 
-		 * This whole operation must be quickquickquick
-		 */
-
-		 // hello world only
 		 let actions: IContextAction[] = [];
-		 let helloWorldAction: IContextAction = {
-			 Name: "say hello",
-			 Action: new HelloWorldAction(),
+		 let pasteAction: IContextAction = {
+			 Name: "Paste",
+			 Action: new PasteUserAction(this.clipboardManager),
 			 ActionList: null
-		 }
-		 actions.push(helloWorldAction);
+		 };
+		 actions.push(pasteAction);
 		 return actions;
 	}
 
