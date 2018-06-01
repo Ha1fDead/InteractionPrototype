@@ -26,15 +26,14 @@ export default class ContextMenuElement extends HTMLElement {
 		shadow.appendChild(template.content.cloneNode(true));
 	}
 
-	connectedCallback(): void {
-	}
-
 	set actions(actions: IContextAction[]) {
-		let rootElement = <HTMLUListElement>(<ShadowRoot>this.shadowRoot).querySelector("ul");
+		let rootElement = <HTMLUListElement>(<ShadowRoot>this.shadowRoot).querySelector('ul');
 		for(let action of actions) {
 			let listElement = document.createElement('li');
 			let buttonElement = document.createElement('button');
-			buttonElement.onclick = (<IUserAction>action.Action).Perform;
+			buttonElement.onclick = (ev: MouseEvent) => { 
+				(<IUserAction>action.Action).Perform();
+			};
 			buttonElement.innerText = action.Name;
 			listElement.appendChild(buttonElement);
 			rootElement.appendChild(listElement);
