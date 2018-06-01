@@ -31,6 +31,11 @@ export default class ContextMenuElement extends HTMLElement {
 		for(let action of actions) {
 			let listElement = document.createElement('li');
 			let buttonElement = document.createElement('button');
+			buttonElement.onmousedown = (ev: MouseEvent) => {
+				// prevent mouse down so it doesn't change the focus to the context menu
+				// context menu doesn't "Get" focus
+				ev.preventDefault();
+			};
 			buttonElement.onclick = (ev: MouseEvent) => { 
 				(<IUserAction>action.Action).Perform();
 			};

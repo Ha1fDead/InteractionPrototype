@@ -11,7 +11,6 @@ export default class ClipboardManager {
 	constructor(private uiManager: InteractionManager) {
 		this.internalClipboardData = null;
 
-		// Why does the binding to "This" work within these methods?
 		document.documentElement.oncut = (event: ClipboardEvent) => { this.OnExternalCut(event) };
 		document.documentElement.onpaste = (event: ClipboardEvent) => { this.OnExternalPaste(event) };
 		document.documentElement.oncopy = (event: ClipboardEvent) => { this.OnExternalCopy(event) };
