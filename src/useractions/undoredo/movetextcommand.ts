@@ -1,5 +1,6 @@
 import { CanvasContext } from '../../userinterface/canvascontext.js';
 import { IUndoRedoCommand } from './undoredocommand.js';
+import TextStore from '../../data/textstore.js';
 
 // HOW
 export default class MoveTextCommand implements IUndoRedoCommand {
@@ -7,17 +8,17 @@ export default class MoveTextCommand implements IUndoRedoCommand {
 		private sourceIndex: number,
 		private destIndex: number,
 		private text: string,
-		private sourceContext: CanvasContext,
-		private destContext: CanvasContext) {
+		private textStore: TextStore) {
 
 	}
 
 	Do(): void {
-		this.destContext.AddText(this.text, this.destIndex);
-		this.sourceContext.RemoveText(this.sourceIndex);
+		// yes I know this is broken
+		this.textStore.InsertData(this.destIndex, this.text);
+		this.textStore.RemoveData(this.sourceIndex);
 	}
 	Undo(): void {
-		this.sourceContext.AddText(this.text, this.sourceIndex);
-		this.destContext.RemoveText(this.destIndex);
+		this.textStore.InsertData(this.sourceIndex, this.text);
+		this.textStore.RemoveData(this.destIndex);
 	}
 }

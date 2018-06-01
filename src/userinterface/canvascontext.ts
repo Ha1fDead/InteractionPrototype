@@ -74,14 +74,6 @@ export class CanvasContext implements IInteractionContext {
 		}
 	}
 
-	public AddText(text: string, index: number) {
-		this.textStore.InsertData(index, text);
-	}
-
-	public RemoveText(index: number): string {
-		return this.textStore.RemoveData(index);
-	}
-
 	GetContextActions(): IContextAction[] {
 		 let actions: IContextAction[] = [];
 		 let pasteAction: IContextAction = {
