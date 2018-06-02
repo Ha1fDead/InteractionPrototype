@@ -1,10 +1,10 @@
-import IDroppable from "../dragdrop/droppable.js";
+import IDropContainer from "../dragdrop/dropcontainer.js";
 import IDragable from "../dragdrop/draggable.js";
 import { IContextual } from "../contextual/contextual.js";
 import { IInteractiveElement } from "./interactiveelement.js";
 import { ICopyable } from "../../useractions/clipboard/copyable.js";
-import IPasteable from "../../useractions/clipboard/pasteable.js";
 import ICutable from "../../useractions/clipboard/cutable.js";
+import IPasteContainer from "../../useractions/clipboard/pastecontainer.js";
 
 /**
  * Interactive Contexts are glue layers to give native functionality to all of my components, such as:
@@ -21,7 +21,7 @@ import ICutable from "../../useractions/clipboard/cutable.js";
  * 1. Character Sheet (multiple sheets can be loaded at one time)
  * 2. Canvas / Scene (could potentially have multiple scenes open at any time)
  */
-export interface IInteractionContext extends IDroppable, IDragable, ICopyable, IPasteable, ICutable, IContextual {
+export interface IInteractionContext extends IDropContainer, IDragable, ICopyable, IPasteContainer, ICutable, IContextual {
 	/**
 	 * The Id of the DOM element that you want to bind the InterfaceContext to
 	 */

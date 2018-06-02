@@ -1,4 +1,4 @@
-export default interface IPasteable {
+export default interface IPasteContainer {
 	/**
 	 * The context's custom handled 'Paste' operation
 	 * 
