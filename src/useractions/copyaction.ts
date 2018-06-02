@@ -1,5 +1,6 @@
 import IUserAction from "./useraction.js";
-import ClipboardManager from "./clipboard/clipboardmanager.js";
+// eventually move this to the clipboard store
+import ClipboardManager from "../userinterface/clipboard/clipboardmanager.js";
 
 export default class CopyUserAction implements IUserAction {
 	constructor(private clipboardManager: ClipboardManager) {

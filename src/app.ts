@@ -3,7 +3,7 @@ import { DraggableEffectAllowedTypes } from './userinterface/dragdrop/dragdropdi
 import { InteractionManager } from "./userinterface/interaction/interactionmanager.js";
 import { CanvasContext } from "./userinterface/canvascontext.js";
 import ContextManager from './userinterface/contextual/contextmanager.js';
-import ClipboardManager from './useractions/clipboard/clipboardmanager.js';
+import ClipboardManager from './userinterface/clipboard/clipboardmanager.js';
 import { IUndoRedoCommandStack, UndoRedoCommandStack } from './useractions/undoredo/undoredocommandmanager.js';
 import TextStore from './data/textstore.js';
 

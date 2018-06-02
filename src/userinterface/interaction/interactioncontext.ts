@@ -2,9 +2,9 @@ import IDropContainer from "../dragdrop/dropcontainer.js";
 import IDragable from "../dragdrop/draggable.js";
 import { IContextual } from "../contextual/contextual.js";
 import { IInteractiveElement } from "./interactiveelement.js";
-import { ICopyable } from "../../useractions/clipboard/copyable.js";
-import ICutable from "../../useractions/clipboard/cutable.js";
-import IPasteContainer from "../../useractions/clipboard/pastecontainer.js";
+import { ICopyable } from "../clipboard/copyable.js";
+import ICutable from "../clipboard/cutable.js";
+import IPasteContainer from "../clipboard/pastecontainer.js";
 
 /**
  * Interactive Contexts are glue layers to give native functionality to all of my components, such as:

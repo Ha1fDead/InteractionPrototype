@@ -5,7 +5,7 @@ import { DraggableDropEffectsTypes, DraggableEffectAllowedTypes, DraggableEffect
 import { IInteractionContext } from "./interaction/interactioncontext.js";
 import { InteractionManager } from "./interaction/interactionmanager.js";
 import { DataTransferTypes } from './interaction/datatransfertypes.js';
-import ClipboardManager from '../useractions/clipboard/clipboardmanager.js';
+import ClipboardManager from './clipboard/clipboardmanager.js';
 import IContextAction from './contextual/contextaction.js';
 import HelloWorldAction from '../useractions/helloworldaction.js';
 import { InteractiveElement, IInteractiveElement } from './interaction/interactiveelement.js';
