@@ -21,7 +21,7 @@ import IPasteContainer from "../clipboard/pastecontainer.js";
  * 1. Character Sheet (multiple sheets can be loaded at one time)
  * 2. Canvas / Scene (could potentially have multiple scenes open at any time)
  */
-export interface IInteractionContext extends IDropContainer, IDragable, ICopyable, IPasteContainer, ICutable, IContextual {
+export interface IInteractionContext extends IDropContainer, IDragable, IPasteContainer, IContextual {
 	/**
 	 * The Id of the DOM element that you want to bind the InterfaceContext to
 	 */

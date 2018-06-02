@@ -90,6 +90,8 @@ export class CanvasContext implements IInteractionContext {
      *
      * This method should REMOVE the element via a command (so the user can undo it) and return a DataTransfer object representing the data entirely so it can be replicated
      */
+
+	 // MOVE TO ACTION
 	HandleCut(): DataTransfer {
 		let data = new DataTransfer();
 		let indexToUse = this.selectedIndex === null ? this.interactiveElements.length - 1 : this.selectedIndex;
@@ -105,6 +107,7 @@ export class CanvasContext implements IInteractionContext {
      *
      * This method should make a copy of the data in a DataTransfer object so it can be replicated at-will from the user
      */
+	 // MOVE TO ACTION
 	HandleCopy(): DataTransfer {
 		let transfer = new DataTransfer();
 		if(this.selectedIndex !== null) {
@@ -120,6 +123,7 @@ export class CanvasContext implements IInteractionContext {
      * This method should build a "Paste Event" into the command stack so the user can undo this.
      * @param data to be pasted
      */
+	 // MOVE TO ACTION
 	HandlePaste(data: DataTransfer): void {
 		let textToAdd = data.getData(DataTransferTypes.Text);
 		let addTextCommand = new AddTextCommand(this.textStore, textToAdd, this.interactiveElements.length);
@@ -132,6 +136,7 @@ export class CanvasContext implements IInteractionContext {
 		event.preventDefault();
 	}
 
+	 // MOVE TO ACTION
 	HandleDrop(event: DragEvent): void {
 		event.preventDefault();
 		let dropEffectAllowed = <DraggableEffectAllowedTypes>event.dataTransfer.effectAllowed;

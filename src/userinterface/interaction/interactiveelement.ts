@@ -1,6 +1,6 @@
+import { IDragableElement } from './../dragdrop/draggable';
 import { IContextual } from './../contextual/contextual.js';
 import IContextAction from '../contextual/contextaction.js';
-import IDragable from '../dragdrop/draggable.js';
 import { DataTransferTypes } from './datatransfertypes.js';
 import IUserAction from '../../useractions/useraction.js';
 import HelloWorldAction from '../../useractions/helloworldaction.js';
@@ -30,11 +30,7 @@ import ClipboardManager from '../clipboard/clipboardmanager.js';
  * 2. Should InteractiveItem be a class or an interface?
  * 3. Should Dragable / Copyable just have functions for "GetDataTransfer"?
  */
-export interface IInteractiveElement extends IDragable, IContextual {
-	/**
-	 * Used for drag and drop, copy + paste actions
-	 */
-	PopulateDataTransfer(dataTransfer: DataTransfer): void;
+export interface IInteractiveElement extends IDragableElement, IContextual {
 }
 
 export class InteractiveElement implements IInteractiveElement {

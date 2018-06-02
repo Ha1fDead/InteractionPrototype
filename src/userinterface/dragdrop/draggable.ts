@@ -1,4 +1,10 @@
+import ITransferable from "../interaction/transferable";
+
 /**
+ * Something that can invoke Dragable actions from the Browser. Generally avoid this interface, and use DragableElement instead.
+ * 
+ * They are separated because of the Transferable interface -- you can't "Get a Canvas's Transferable" directly, but can invoke a canvas's "HandleDragStart".
+ * 
  * Note: MDN defines an "OnDragExit" that is only supported in Firefox
  */
 export default interface IDragable {
@@ -22,4 +28,11 @@ export default interface IDragable {
 	 * Potentially continuous, and fires every "couple hundred of MS"
 	 */
 	HandleDrag(event: DragEvent): void;
+}
+
+/**
+ * A dragable element. Generally, use this interface everywhere you intend to actually "Drag Something"
+ */
+export interface IDragableElement extends IDragable, ITransferable {
+
 }

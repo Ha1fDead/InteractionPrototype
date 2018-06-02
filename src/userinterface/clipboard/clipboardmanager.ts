@@ -143,18 +143,23 @@ export default class ClipboardManager {
 			throw new Error('All external clipboard events must be trusted.');
 		}
 
-		let activeContext = this.uiManager.FindActiveContext();
-		if(activeContext === null) {
+		let activeSelection = this.uiManager.FindActiveContextSelection();
+		if(activeSelection === null) {
 			this.internalClipboardData = null;
 			return;
 		}
 		
-		event.preventDefault();
-		let ctxCutData = activeContext.HandleCut();
-		if(ctxCutData.items.length <= 0) {
+		let dataTransfer = new DataTransfer();
+		let cutData = activeSelection.PopulateDataTransfer(dataTransfer);
+		if(dataTransfer.items.length <= 0) {
+			this.internalClipboardData = null;
 			return;
 		}
-		this.internalClipboardData = ctxCutData;
+		
+		// TODO -- REMOVE DATA FROM ACTUAL CONTEXT
+
+		event.preventDefault();
+		this.internalClipboardData = dataTransfer;
 		this.AttemptCopyClipboardData(this.internalClipboardData);
 	}
 
@@ -171,17 +176,22 @@ export default class ClipboardManager {
 	 * 3b. Remove the "Selected" element, copy the element into the internal clipboard, and ATTEMPT to copy the element into the external clipboard
 	 */
 	OnContextCut(): void {
-		let activeContext = this.uiManager.FindActiveContext();
-		if(activeContext === null) {
+		let activeSelection = this.uiManager.FindActiveContextSelection();
+		if(activeSelection === null) {
+			this.internalClipboardData = null;
+			return;
+		}
+		
+		let dataTransfer = new DataTransfer();
+		let cutData = activeSelection.PopulateDataTransfer(dataTransfer);
+		if(dataTransfer.items.length <= 0) {
 			this.internalClipboardData = null;
 			return;
 		}
 
-		let ctxCutData = activeContext.HandleCut();
-		if(ctxCutData.items.length <= 0) {
-			return;
-		}
-		this.internalClipboardData = ctxCutData;
+		// TODO -- REMOVE DATA FROM ACTUAL CONTEXT
+
+		this.internalClipboardData = dataTransfer;
 		this.AttemptCopyClipboardData(this.internalClipboardData);
 	}
 
