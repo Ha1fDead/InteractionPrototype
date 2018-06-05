@@ -1,3 +1,4 @@
+import { IContextual } from './contextual.js';
 import IContextAction from "./contextaction.js";
 import IUserAction from "../../useractions/useraction";
 
@@ -19,25 +20,36 @@ template.innerHTML = `
 
 
 export default class ContextMenuElement extends HTMLElement {
+	private _contextable: IContextual | null;
+
 	constructor() {
 		super();
 
+		this._contextable = null;
 		var shadow = this.attachShadow({ mode: 'open' });
 		shadow.appendChild(template.content.cloneNode(true));
 	}
 
-	set actions(actions: IContextAction[]) {
+	HandleUserSelectAction(event: MouseEvent): void {
+		let action = (<HTMLButtonElement>event.target).value;
+		(<IContextual>this._contextable).InvokeAction(action);
+	}
+
+	set contextable(contextable: IContextual) {
+		this._contextable = contextable;
 		let rootElement = <HTMLUListElement>(<ShadowRoot>this.shadowRoot).querySelector('ul');
+		let actions = contextable.GetContextActions();
 		for(let action of actions) {
 			let listElement = document.createElement('li');
 			let buttonElement = document.createElement('button');
+			buttonElement.value = action.Name;
 			buttonElement.onmousedown = (ev: MouseEvent) => {
 				// prevent mouse down so it doesn't change the focus to the context menu
 				// context menu doesn't "Get" focus
 				ev.preventDefault();
 			};
 			buttonElement.onclick = (ev: MouseEvent) => { 
-				(<IUserAction>action.Action).Perform();
+				this.HandleUserSelectAction(ev);
 			};
 			buttonElement.innerText = action.Name;
 			listElement.appendChild(buttonElement);

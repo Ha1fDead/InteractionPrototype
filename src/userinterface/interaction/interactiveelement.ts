@@ -41,12 +41,10 @@ export class InteractiveElement implements IInteractiveElement {
 	GetContextActions(): IContextAction[] {
 		let copyAction: IContextAction = {
 			Name: "Copy",
-			Action: new CopyUserAction(this.clipboardManager),
 			ActionList: null
 		};
 		let cutAction: IContextAction = {
 			Name: "Cut",
-			Action: new CutUserAction(this.clipboardManager),
 			ActionList: null
 		};
 		let actions: IContextAction[] = [
@@ -54,6 +52,19 @@ export class InteractiveElement implements IInteractiveElement {
 			cutAction
 		];
 		return actions;
+	}
+
+	InvokeAction(action: string): void {
+		switch(action) {
+			case "Copy":
+				new CopyUserAction(this.clipboardManager).Perform();
+				break;
+			case "Cut":
+				new CutUserAction(this.clipboardManager).Perform();
+				break;
+			default:
+				throw new Error("Could not find requested action");
+		}
 	}
 
 	PopulateDataTransfer(dataTransfer: DataTransfer): void {

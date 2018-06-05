@@ -85,9 +85,9 @@ export default class ContextManager {
 		}
 		let activeSelection = activeContext.GetActiveSelection();
 		if(activeSelection === null) {
-			contextMenu.actions = activeContext.GetContextActions();
+			contextMenu.contextable = activeContext;
 		} else {
-			contextMenu.actions = activeSelection.GetContextActions();
+			contextMenu.contextable = activeSelection;
 		}
 
 		mainElement.appendChild(contextMenu);

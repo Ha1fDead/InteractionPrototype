@@ -32,11 +32,6 @@ export default interface IContextAction {
 	Name: string;
 
 	/**
-	 * If this action is a single Action, then this is the action that will be performed when "Selected"
-	 */
-	Action: IUserAction | null;
-
-	/**
 	 * If this action is a list of actions, then clicking on it will open another context menu (or dropdown, or radial menu)
 	 */
 	ActionList: IContextAction[] | null;

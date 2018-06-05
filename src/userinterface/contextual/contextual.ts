@@ -9,5 +9,11 @@ export interface IContextual {
     /**
      * Retrieves the eligible actions that a user can perform on this interactive element
      */
-	GetContextActions(): IContextAction[];
+    GetContextActions(): IContextAction[];
+    
+    /**
+     * Invokes a selected Action
+     * @param action that was selected by the user to be invoked
+     */
+    InvokeAction(action: string): void;
 }

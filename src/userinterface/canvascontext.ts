@@ -78,11 +78,19 @@ export class CanvasContext implements IInteractionContext {
 		 let actions: IContextAction[] = [];
 		 let pasteAction: IContextAction = {
 			 Name: "Paste",
-			 Action: new PasteUserAction(this.clipboardManager),
 			 ActionList: null
 		 };
 		 actions.push(pasteAction);
 		 return actions;
+	}
+
+	InvokeAction(action: string): void {
+		if(action === "Paste") {
+			(new PasteUserAction(this.clipboardManager)).Perform();
+			return;
+		}
+
+		throw new Error("Could not find the requested action");
 	}
 
     /**
@@ -107,6 +115,7 @@ export class CanvasContext implements IInteractionContext {
      *
      * This method should make a copy of the data in a DataTransfer object so it can be replicated at-will from the user
      */
+	
 	 // MOVE TO ACTION
 	HandleCopy(): DataTransfer {
 		let transfer = new DataTransfer();
