@@ -1,11 +1,12 @@
 import { ClipboardDict } from './clipboarddict.js';
-// THIS IS BAD -- NEED TO FIGURE OUT A BETTER PLACE TO PUT THESE THINGS
-import { IInteractiveElement } from '../../userinterface/interaction/interactiveelement';
-import { InteractionManager } from '../../userinterface/interaction/interactionmanager.js';
-import { DataTransferTypes } from '../../userinterface/interaction/datatransfertypes.js';
+import { IInteractiveElement } from '../interaction/interactiveelement';
+import { InteractionManager } from '../interaction/interactionmanager.js';
+import { DataTransferTypes } from '../interaction/datatransfertypes.js';
 import ClipboardStore from './clipboardstore.js';
 
-// the "external" clipboard controls need to be moved into the UI layer
+/**
+ * Responsible for handling browser-level Clipboard Events, and drilling them down into actionable elements
+ */
 export default class ClipboardManager {
 	constructor(private uiManager: InteractionManager, private clipboardStore: ClipboardStore) {
 		document.documentElement.oncut = (event: ClipboardEvent) => { this.OnCut(event) };

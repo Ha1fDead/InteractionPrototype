@@ -33,6 +33,8 @@ export default class ContextMenuElement extends HTMLElement {
 	HandleUserSelectAction(event: MouseEvent): void {
 		let action = (<HTMLButtonElement>event.target).value;
 		(<IContextual>this._contextable).InvokeAction(action);
+
+		// TODO -- have context manager kill this component, because an item was selected the menu should close
 	}
 
 	set contextable(contextable: IContextual) {

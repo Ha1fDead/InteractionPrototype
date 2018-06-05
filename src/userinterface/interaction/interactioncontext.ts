@@ -2,8 +2,6 @@ import IDropContainer from "../dragdrop/dropcontainer.js";
 import IDragable from "../dragdrop/draggable.js";
 import { IContextual } from "../contextual/contextual.js";
 import { IInteractiveElement } from "./interactiveelement.js";
-import { ICopyable } from "../clipboard/copyable.js";
-import ICutable from "../clipboard/cutable.js";
 import IPasteContainer from "../clipboard/pastecontainer.js";
 
 /**

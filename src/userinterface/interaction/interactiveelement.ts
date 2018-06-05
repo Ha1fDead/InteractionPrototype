@@ -1,3 +1,4 @@
+import { IUndoRedoCommandStack } from './../../useractions/undoredo/undoredocommandmanager';
 import { ICopyable } from './../clipboard/copyable';
 import { IDragableElement } from './../dragdrop/draggable';
 import { IContextual } from './../contextual/contextual.js';
@@ -6,8 +7,10 @@ import { DataTransferTypes } from './datatransfertypes.js';
 import IUserAction from '../../useractions/useraction.js';
 import HelloWorldAction from '../../useractions/helloworldaction.js';
 import ClipboardManager from '../clipboard/clipboardmanager.js';
-import ICutable from '../clipboard/cutable';
-import ClipboardStore from '../clipboard/clipboardstore';
+import ICuttable from '../clipboard/cuttable.js';
+import ClipboardStore from '../clipboard/clipboardstore.js';
+import RemoveTextCommand from '../../useractions/undoredo/removetextcommand.js';
+import TextStore from '../../data/textstore.js';
 
 /**
  * Interactive Elements are the core "Visual" element of the system. Essentially anything that can be "Rendered" in both the Canvas and HTML is an Interactive Item
@@ -30,11 +33,11 @@ import ClipboardStore from '../clipboard/clipboardstore';
  * 2. Should InteractiveItem be a class or an interface?
  * 3. Should Dragable / Copyable just have functions for "GetDataTransfer"?
  */
-export interface IInteractiveElement extends IDragableElement, IContextual, ICopyable, ICutable {
+export interface IInteractiveElement extends IDragableElement, IContextual, ICopyable, ICuttable {
 }
 
 export class InteractiveElement implements IInteractiveElement {
-	constructor(public text: string, private clipboardStore: ClipboardStore) {
+	constructor(public text: string, private clipboardStore: ClipboardStore, private textStore: TextStore, private commandManager: IUndoRedoCommandStack) {
 
 	}
 
@@ -61,8 +64,8 @@ export class InteractiveElement implements IInteractiveElement {
 
 	HandleCut(dataTransfer: DataTransfer): void {
 		this.HandleCopy(dataTransfer);
-		
-		// todo: remove self from store // broadcast cut to parent to be removed
+		let removeTextCommand = new RemoveTextCommand(this.textStore, this.textStore.GetAllData().indexOf(this.text));
+		this.commandManager.PerformAction(removeTextCommand, false);
 	}
 
 	InvokeAction(action: string): void {

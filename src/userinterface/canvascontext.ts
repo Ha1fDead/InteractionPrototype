@@ -75,7 +75,7 @@ export class CanvasContext implements IInteractionContext {
 	private subscribeToChanges() {
 		this.interactiveElements.length = 0;
 		for(let data of this.textStore.GetAllData()) {
-			this.interactiveElements.push(new InteractiveElement(data, this.clipboardStore));
+			this.interactiveElements.push(new InteractiveElement(data, this.clipboardStore, this.textStore, this.commandManager));
 		}
 	}
 
