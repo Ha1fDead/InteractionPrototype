@@ -7,6 +7,6 @@ export default class PasteUserAction implements IUserAction {
 	}
 
 	Perform(): void {
-		this.clipboardManager.OnContextPaste();
+		this.clipboardManager.OnPaste(null);
 	}
 }

@@ -11,9 +11,9 @@ export default class ClipboardManager {
 	constructor(private uiManager: InteractionManager) {
 		this.internalClipboardData = null;
 
-		document.documentElement.oncut = (event: ClipboardEvent) => { this.OnExternalCut(event) };
-		document.documentElement.onpaste = (event: ClipboardEvent) => { this.OnExternalPaste(event) };
-		document.documentElement.oncopy = (event: ClipboardEvent) => { this.OnExternalCopy(event) };
+		document.documentElement.oncut = (event: ClipboardEvent) => { this.OnCut(event) };
+		document.documentElement.onpaste = (event: ClipboardEvent) => { this.OnPaste(event) };
+		document.documentElement.oncopy = (event: ClipboardEvent) => { this.OnCopy(event) };
 	}
 
 	/**
@@ -50,13 +50,15 @@ export default class ClipboardManager {
 	 * 
 	 * We copy to both the internal and external buffers so all copy/paste instances are unified.
 	 */
-	OnExternalCopy(event: ClipboardEvent): void {
-		if(event.type !== ClipboardDict.Copy) {
-			throw new Error(`Cannot perform ${event.type} action on copy`);
-		}
-
-		if(!event.isTrusted) {
-			throw new Error('All external clipboard events must be trusted.');
+	OnCopy(event: ClipboardEvent | null): void {
+		if(event != null) {
+			if(event.type !== ClipboardDict.Copy) {
+				throw new Error(`Cannot perform ${event.type} action on copy`);
+			}
+	
+			if(!event.isTrusted) {
+				throw new Error('All external clipboard events must be trusted.');
+			}
 		}
 
 		let activeSelection = this.uiManager.FindActiveContextSelection();
@@ -69,45 +71,8 @@ export default class ClipboardManager {
 			return;
 		}
 
-		event.preventDefault();
-		let copiedData = new DataTransfer();
-		activeSelection.PopulateDataTransfer(copiedData);
-		if(copiedData.items.length <= 0) {
-			return;
-		}
-		this.internalClipboardData = copiedData;
-		this.AttemptCopyClipboardData(this.internalClipboardData);
-	}
-
-	/**
-	 * Context Copy is fired when we do not have a browser-specific copy context. 
-	 * 
-	 * Fired: `right-click -> copy` in a canvas or any other non-native elements that custom clipboard code must be bound to
-	 * 
-	 * Behavior:
-	 * 1. User fires action request
-	 * 2. Grab the "Selected" item from the current context
-	 * 3. Copy the data into the internal buffer, and ATTEMPT to copy the data into the external buffer
-	 * 
-	 * After we copy into our INTERNAL clipboard, we want to attempt to persist the copy in the SYSTEM clipboard. This requires external permissions, however.
-	 * 
-	 * Without these permissions, the UNDESIRABLE workflow could be:
-	 * 
-	 * 1. User copies text outside of app
-	 * 2. User copies text within app (without using browser-level copy like ctrl-c)
-	 * 3. User pastes text ouside of app, which is the same text as #1
-	 * 
-	 * With the permissions, the workflow would be:
-	 * 
-	 * 1. User copies text outside of app
-	 * 2. User copies text within app (without using browser-level copy like ctrl-c)
-	 * 3. User pastes text outside of app, which is the same text as #2
-	 */
-	OnContextCopy(): void {
-		let activeSelection = this.uiManager.FindActiveContextSelection();
-		if(activeSelection === null) {
-			this.internalClipboardData = null;
-			return;
+		if(event != null) {
+			event.preventDefault();
 		}
 
 		let copiedData = new DataTransfer();
@@ -134,48 +99,17 @@ export default class ClipboardManager {
 	 * 
 	 * We copy to both the internal and external clipboards so all copy/paste instances are unified.
 	 */
-	OnExternalCut(event: ClipboardEvent): void {
-		if(event.type !== ClipboardDict.Cut) {
-			throw new Error(`Cannot perform ${event.type} action on cut`);
+	OnCut(event: ClipboardEvent | null): void {
+		if(event != null) {
+			if(event.type !== ClipboardDict.Cut) {
+				throw new Error(`Cannot perform ${event.type} action on cut`);
+			}
+	
+			if(!event.isTrusted) {
+				throw new Error('All external clipboard events must be trusted.');
+			}
 		}
 
-		if(!event.isTrusted) {
-			throw new Error('All external clipboard events must be trusted.');
-		}
-
-		let activeSelection = this.uiManager.FindActiveContextSelection();
-		if(activeSelection === null) {
-			this.internalClipboardData = null;
-			return;
-		}
-		
-		let dataTransfer = new DataTransfer();
-		let cutData = activeSelection.PopulateDataTransfer(dataTransfer);
-		if(dataTransfer.items.length <= 0) {
-			this.internalClipboardData = null;
-			return;
-		}
-		
-		// TODO -- REMOVE DATA FROM ACTUAL CONTEXT
-
-		event.preventDefault();
-		this.internalClipboardData = dataTransfer;
-		this.AttemptCopyClipboardData(this.internalClipboardData);
-	}
-
-	/**
-	 * Internal app-controlled cut action.
-	 * 
-	 * Fired: right click -> cut within app context
-	 * 
-	 * Behavior:
-	 * 
-	 * 1. User fires action request
-	 * 2. Grab the "selected" element context from the action
-	 * 3a. Fire a "Cut" action and push onto the command stack
-	 * 3b. Remove the "Selected" element, copy the element into the internal clipboard, and ATTEMPT to copy the element into the external clipboard
-	 */
-	OnContextCut(): void {
 		let activeSelection = this.uiManager.FindActiveContextSelection();
 		if(activeSelection === null) {
 			this.internalClipboardData = null;
@@ -191,6 +125,9 @@ export default class ClipboardManager {
 
 		// TODO -- REMOVE DATA FROM ACTUAL CONTEXT
 
+		if(event != null) {
+			event.preventDefault();
+		}
 		this.internalClipboardData = dataTransfer;
 		this.AttemptCopyClipboardData(this.internalClipboardData);
 	}
@@ -215,13 +152,15 @@ export default class ClipboardManager {
 	 * 
 	 * The data that SHOULD be bound would be data #2.
 	 */
-	OnExternalPaste(event: ClipboardEvent): void {
-		if(event.type !== ClipboardDict.Paste) {
-			throw new Error(`Cannot perform ${event.type} action on paste`);
-		}
-
-		if(!event.isTrusted) {
-			throw new Error('All external clipboard events must be trusted.');
+	OnPaste(event: ClipboardEvent | null): void {
+		if(event !== null) {
+			if(event.type !== ClipboardDict.Paste) {
+				throw new Error(`Cannot perform ${event.type} action on paste`);
+			}
+	
+			if(!event.isTrusted) {
+				throw new Error('All external clipboard events must be trusted.');
+			}
 		}
 
 		let activeContext = this.uiManager.FindActiveContext();
@@ -230,36 +169,13 @@ export default class ClipboardManager {
 		}
 
 		let dataToUse: DataTransfer;
-		if(this.internalClipboardData === null) {
+		if(this.internalClipboardData === null && event !== null) {
 			dataToUse = event.clipboardData;
+			event.preventDefault();
 		} else {
 			dataToUse = <DataTransfer>this.internalClipboardData;
 		}
-		event.preventDefault();
 		activeContext.HandlePaste(dataToUse);
-	}
-
-	/**
-	 * Internal element triggered paste event.
-	 * 
-	 * Fired: right-click, paste or internal paste buttons
-	 * 
-	 * Behavior:
-	 * 1. User fires action request
-	 * 2. Find the component that the paste should be triggered into
-	 * 3. Fire a "Paste" action into the command stack with the most-recent "copied" item
-	 */
-	OnContextPaste(): void {
-		if(this.internalClipboardData == null) {
-			return;
-		}
-
-		let activeContext = this.uiManager.FindActiveContext();
-		if(activeContext === null) {
-			return;
-		}
-
-		activeContext.HandlePaste(this.internalClipboardData);
 	}
 
 	async AttemptCopyClipboardData(data: DataTransfer): Promise<void> {

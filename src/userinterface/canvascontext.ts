@@ -34,13 +34,13 @@ export class CanvasContext implements IInteractionContext {
 		
 		canvas.onmousedown = (ev: MouseEvent) => {
 			if(ev.shiftKey) {
-				clipboardManager.OnContextCopy();
+				clipboardManager.OnCopy(null);
 			}
 			if(ev.ctrlKey) {
-				clipboardManager.OnContextCut();
+				clipboardManager.OnCut(null);
 			}
 			if(ev.altKey) {
-				clipboardManager.OnContextPaste();
+				clipboardManager.OnPaste(null);
 			}
 
 			let potentialIndex = Math.floor(ev.y / 50);
