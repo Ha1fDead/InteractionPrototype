@@ -10,7 +10,7 @@ import IContextAction from './contextual/contextaction.js';
 import HelloWorldAction from '../useractions/helloworldaction.js';
 import { InteractiveElement, IInteractiveElement } from './interaction/interactiveelement.js';
 import TextStore from '../data/textstore.js';
-import PasteUserAction from '../useractions/pasteaction.js';
+import ClipboardStore from './clipboard/clipboardstore.js';
 
 export class CanvasContext implements IInteractionContext {
 	private selectedIndex: number | null = null;
@@ -19,7 +19,7 @@ export class CanvasContext implements IInteractionContext {
 	constructor(
 		public Id: string,
 		uiManager: InteractionManager,
-		private clipboardManager: ClipboardManager,
+		private clipboardStore: ClipboardStore,
 		private commandManager: IUndoRedoCommandStack,
 		private textStore: TextStore) {
 			
@@ -33,14 +33,19 @@ export class CanvasContext implements IInteractionContext {
 		this.textStore.AddCallback( () => { this.subscribeToChanges() } );
 		
 		canvas.onmousedown = (ev: MouseEvent) => {
-			if(ev.shiftKey) {
-				clipboardManager.OnCopy(null);
-			}
-			if(ev.ctrlKey) {
-				clipboardManager.OnCut(null);
-			}
-			if(ev.altKey) {
-				clipboardManager.OnPaste(null);
+			let activeSelection = this.GetActiveSelection();
+			if(activeSelection !== null) {
+				if(ev.shiftKey) {
+					activeSelection.HandleCopy(new DataTransfer());
+				}
+				if(ev.ctrlKey) {
+					activeSelection.HandleCut(new DataTransfer());
+				}
+				if(ev.altKey) {
+					if(this.clipboardStore.data !== null) {
+						this.HandlePaste(this.clipboardStore.data);
+					}
+				}
 			}
 
 			let potentialIndex = Math.floor(ev.y / 50);
@@ -70,7 +75,7 @@ export class CanvasContext implements IInteractionContext {
 	private subscribeToChanges() {
 		this.interactiveElements.length = 0;
 		for(let data of this.textStore.GetAllData()) {
-			this.interactiveElements.push(new InteractiveElement(data, this.clipboardManager));
+			this.interactiveElements.push(new InteractiveElement(data, this.clipboardStore));
 		}
 	}
 
@@ -85,45 +90,12 @@ export class CanvasContext implements IInteractionContext {
 	}
 
 	InvokeAction(action: string): void {
-		if(action === "Paste") {
-			(new PasteUserAction(this.clipboardManager)).Perform();
+		if(action === "Paste" && this.clipboardStore.data !== null) {
+			this.HandlePaste(this.clipboardStore.data);
 			return;
 		}
 
 		throw new Error("Could not find the requested action");
-	}
-
-    /**
-     * The element's custom handled 'Cut' operation
-     *
-     * This method should REMOVE the element via a command (so the user can undo it) and return a DataTransfer object representing the data entirely so it can be replicated
-     */
-
-	 // MOVE TO ACTION
-	HandleCut(): DataTransfer {
-		let data = new DataTransfer();
-		let indexToUse = this.selectedIndex === null ? this.interactiveElements.length - 1 : this.selectedIndex;
-		let cutElement = this.interactiveElements[indexToUse];
-		let removeTextCommand = new RemoveTextCommand(this.textStore, indexToUse);
-		this.commandManager.PerformAction(removeTextCommand, false);
-		cutElement.PopulateDataTransfer(data);
-		return data;
-	}
-
-    /**
-     * The element's custom handled 'Copy' operation
-     *
-     * This method should make a copy of the data in a DataTransfer object so it can be replicated at-will from the user
-     */
-	
-	 // MOVE TO ACTION
-	HandleCopy(): DataTransfer {
-		let transfer = new DataTransfer();
-		if(this.selectedIndex !== null) {
-			this.interactiveElements[this.selectedIndex].PopulateDataTransfer(transfer);
-		}
-
-		return transfer;
 	}
 
     /**

@@ -3,14 +3,11 @@ import { ClipboardDict } from './clipboarddict.js';
 import { IInteractiveElement } from '../../userinterface/interaction/interactiveelement';
 import { InteractionManager } from '../../userinterface/interaction/interactionmanager.js';
 import { DataTransferTypes } from '../../userinterface/interaction/datatransfertypes.js';
+import ClipboardStore from './clipboardstore.js';
 
 // the "external" clipboard controls need to be moved into the UI layer
 export default class ClipboardManager {
-	private internalClipboardData: DataTransfer | null;
-
-	constructor(private uiManager: InteractionManager) {
-		this.internalClipboardData = null;
-
+	constructor(private uiManager: InteractionManager, private clipboardStore: ClipboardStore) {
 		document.documentElement.oncut = (event: ClipboardEvent) => { this.OnCut(event) };
 		document.documentElement.onpaste = (event: ClipboardEvent) => { this.OnPaste(event) };
 		document.documentElement.oncopy = (event: ClipboardEvent) => { this.OnCopy(event) };
@@ -24,7 +21,7 @@ export default class ClipboardManager {
 	 */
 	OnClipboardChange = (event: ClipboardEvent): void => {
 		// When this is supported, it will solve the "System" -> "Internal" use case
-		this.internalClipboardData = event.clipboardData;
+		this.clipboardStore.data = event.clipboardData;
 	}
 
 	/**
@@ -50,15 +47,13 @@ export default class ClipboardManager {
 	 * 
 	 * We copy to both the internal and external buffers so all copy/paste instances are unified.
 	 */
-	OnCopy(event: ClipboardEvent | null): void {
-		if(event != null) {
-			if(event.type !== ClipboardDict.Copy) {
-				throw new Error(`Cannot perform ${event.type} action on copy`);
-			}
-	
-			if(!event.isTrusted) {
-				throw new Error('All external clipboard events must be trusted.');
-			}
+	OnCopy(event: ClipboardEvent): void {
+		if(event.type !== ClipboardDict.Copy) {
+			throw new Error(`Cannot perform ${event.type} action on copy`);
+		}
+
+		if(!event.isTrusted) {
+			throw new Error('All external clipboard events must be trusted.');
 		}
 
 		let activeSelection = this.uiManager.FindActiveContextSelection();
@@ -67,21 +62,12 @@ export default class ClipboardManager {
 			// Is there a way to do this natively?
 			
 			// Alternatively, if "OnClipboardChange" fires, that will solve this use case
-			this.internalClipboardData = null;
+			this.clipboardStore.data = null;
 			return;
 		}
 
-		if(event != null) {
-			event.preventDefault();
-		}
-
-		let copiedData = new DataTransfer();
-		activeSelection.PopulateDataTransfer(copiedData);
-		if(copiedData.items.length <= 0) {
-			return;
-		}
-		this.internalClipboardData = copiedData;
-		this.AttemptCopyClipboardData(this.internalClipboardData);
+		activeSelection.HandleCopy(event.clipboardData);
+		event.preventDefault();
 	}
 
 	/**
@@ -99,37 +85,22 @@ export default class ClipboardManager {
 	 * 
 	 * We copy to both the internal and external clipboards so all copy/paste instances are unified.
 	 */
-	OnCut(event: ClipboardEvent | null): void {
-		if(event != null) {
-			if(event.type !== ClipboardDict.Cut) {
-				throw new Error(`Cannot perform ${event.type} action on cut`);
-			}
-	
-			if(!event.isTrusted) {
-				throw new Error('All external clipboard events must be trusted.');
-			}
+	OnCut(event: ClipboardEvent): void {
+		if(event.type !== ClipboardDict.Cut) {
+			throw new Error(`Cannot perform ${event.type} action on cut`);
+		}
+
+		if(!event.isTrusted) {
+			throw new Error('All external clipboard events must be trusted.');
 		}
 
 		let activeSelection = this.uiManager.FindActiveContextSelection();
 		if(activeSelection === null) {
-			this.internalClipboardData = null;
+			this.clipboardStore.data = null;
 			return;
 		}
 		
-		let dataTransfer = new DataTransfer();
-		let cutData = activeSelection.PopulateDataTransfer(dataTransfer);
-		if(dataTransfer.items.length <= 0) {
-			this.internalClipboardData = null;
-			return;
-		}
-
-		// TODO -- REMOVE DATA FROM ACTUAL CONTEXT
-
-		if(event != null) {
-			event.preventDefault();
-		}
-		this.internalClipboardData = dataTransfer;
-		this.AttemptCopyClipboardData(this.internalClipboardData);
+		activeSelection.HandleCut(event.clipboardData);
 	}
 
 	/**
@@ -152,15 +123,13 @@ export default class ClipboardManager {
 	 * 
 	 * The data that SHOULD be bound would be data #2.
 	 */
-	OnPaste(event: ClipboardEvent | null): void {
-		if(event !== null) {
-			if(event.type !== ClipboardDict.Paste) {
-				throw new Error(`Cannot perform ${event.type} action on paste`);
-			}
-	
-			if(!event.isTrusted) {
-				throw new Error('All external clipboard events must be trusted.');
-			}
+	OnPaste(event: ClipboardEvent): void {
+		if(event.type !== ClipboardDict.Paste) {
+			throw new Error(`Cannot perform ${event.type} action on paste`);
+		}
+
+		if(!event.isTrusted) {
+			throw new Error('All external clipboard events must be trusted.');
 		}
 
 		let activeContext = this.uiManager.FindActiveContext();
@@ -169,25 +138,12 @@ export default class ClipboardManager {
 		}
 
 		let dataToUse: DataTransfer;
-		if(this.internalClipboardData === null && event !== null) {
+		if(this.clipboardStore.data === null) {
 			dataToUse = event.clipboardData;
 			event.preventDefault();
 		} else {
-			dataToUse = <DataTransfer>this.internalClipboardData;
+			dataToUse = this.clipboardStore.data;
 		}
 		activeContext.HandlePaste(dataToUse);
-	}
-
-	async AttemptCopyClipboardData(data: DataTransfer): Promise<void> {
-		/**
-		 * Note: Chrome does not currently support arbitrary "Write" operations
-		 * 
-		 * This means this will only support text copy for now. "Write" will probably (hopefully) be implemented within the next year.
-		 * 
-		 * https://developer.mozilla.org/en-US/docs/Web/Events/paste
-		 */
-		let clipboard: any = (<any>navigator).clipboard;
-		await clipboard.writeText(data.getData(DataTransferTypes.Text));
-		// await clipboard.write(data);
 	}
 }

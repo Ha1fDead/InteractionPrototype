@@ -6,6 +6,7 @@ import ContextManager from './userinterface/contextual/contextmanager.js';
 import ClipboardManager from './userinterface/clipboard/clipboardmanager.js';
 import { IUndoRedoCommandStack, UndoRedoCommandStack } from './useractions/undoredo/undoredocommandmanager.js';
 import TextStore from './data/textstore.js';
+import ClipboardStore from './userinterface/clipboard/clipboardstore.js';
 
 class App {
 	private CommandManager: IUndoRedoCommandStack;
@@ -14,6 +15,7 @@ class App {
 	private ContextManager: ContextManager;
 	private TouchManager: TouchManager;
 	private textStore: TextStore;
+	private clipboardStore: ClipboardStore;
 
 	constructor() {
 		this.textStore = new TextStore();
@@ -24,16 +26,17 @@ class App {
 		this.textStore.InsertData(this.textStore.GetDataLength(), "this line D");
 		this.textStore.InsertData(this.textStore.GetDataLength(), "this line E");
 
+		this.clipboardStore = new ClipboardStore();
 		this.CommandManager = new UndoRedoCommandStack();
 		this.InterfaceManager = new InteractionManager(this.CommandManager);
 		this.ContextManager = new ContextManager(this.InterfaceManager);
 		this.TouchManager = new TouchManager(this.ContextManager);
-		this.ClipboardManager = new ClipboardManager(this.InterfaceManager);
+		this.ClipboardManager = new ClipboardManager(this.InterfaceManager, this.clipboardStore);
 	}
 
 	Run(): void {
-		let canvasListener1 = new CanvasContext('prototypeCanvas1', this.InterfaceManager, this.ClipboardManager, this.CommandManager, this.textStore);
-		let canvasListener2 = new CanvasContext('prototypeCanvas2', this.InterfaceManager, this.ClipboardManager, this.CommandManager, this.textStore);
+		let canvasListener1 = new CanvasContext('prototypeCanvas1', this.InterfaceManager, this.clipboardStore, this.CommandManager, this.textStore);
+		let canvasListener2 = new CanvasContext('prototypeCanvas2', this.InterfaceManager, this.clipboardStore, this.CommandManager, this.textStore);
 
 		let dragElement1 = <HTMLElement>document.getElementById('drag1');
 		dragElement1.ondragstart = (dragEvent: DragEvent) => {

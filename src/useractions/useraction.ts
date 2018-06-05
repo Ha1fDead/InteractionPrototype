@@ -14,8 +14,5 @@
  * Some user actions can be undone and redone. In this way, user actions can push things into the undoredo stack.
  */
 export default interface IUserAction {
-	/**
-	 * Performs the user action, pushing anything into the undoredo stack as necessary
-	 */
-	Perform(): void;
+	// ???
 }

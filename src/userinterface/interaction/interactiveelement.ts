@@ -1,13 +1,13 @@
+import { ICopyable } from './../clipboard/copyable';
 import { IDragableElement } from './../dragdrop/draggable';
 import { IContextual } from './../contextual/contextual.js';
 import IContextAction from '../contextual/contextaction.js';
 import { DataTransferTypes } from './datatransfertypes.js';
 import IUserAction from '../../useractions/useraction.js';
 import HelloWorldAction from '../../useractions/helloworldaction.js';
-import CopyUserAction from '../../useractions/copyaction.js';
-import CutUserAction from '../../useractions/cutaction.js';
-import { ICopyable } from '../clipboard/copyable.js';
 import ClipboardManager from '../clipboard/clipboardmanager.js';
+import ICutable from '../clipboard/cutable';
+import ClipboardStore from '../clipboard/clipboardstore';
 
 /**
  * Interactive Elements are the core "Visual" element of the system. Essentially anything that can be "Rendered" in both the Canvas and HTML is an Interactive Item
@@ -30,11 +30,11 @@ import ClipboardManager from '../clipboard/clipboardmanager.js';
  * 2. Should InteractiveItem be a class or an interface?
  * 3. Should Dragable / Copyable just have functions for "GetDataTransfer"?
  */
-export interface IInteractiveElement extends IDragableElement, IContextual {
+export interface IInteractiveElement extends IDragableElement, IContextual, ICopyable, ICutable {
 }
 
 export class InteractiveElement implements IInteractiveElement {
-	constructor(public text: string, private clipboardManager: ClipboardManager) {
+	constructor(public text: string, private clipboardStore: ClipboardStore) {
 
 	}
 
@@ -54,13 +54,24 @@ export class InteractiveElement implements IInteractiveElement {
 		return actions;
 	}
 
+	HandleCopy(dataTransfer: DataTransfer): void {
+		this.PopulateDataTransfer(dataTransfer);
+		this.clipboardStore.data = dataTransfer;
+	}
+
+	HandleCut(dataTransfer: DataTransfer): void {
+		this.HandleCopy(dataTransfer);
+		
+		// todo: remove self from store // broadcast cut to parent to be removed
+	}
+
 	InvokeAction(action: string): void {
 		switch(action) {
 			case "Copy":
-				new CopyUserAction(this.clipboardManager).Perform();
+				this.HandleCopy(new DataTransfer());
 				break;
 			case "Cut":
-				new CutUserAction(this.clipboardManager).Perform();
+				this.HandleCut(new DataTransfer());
 				break;
 			default:
 				throw new Error("Could not find requested action");
