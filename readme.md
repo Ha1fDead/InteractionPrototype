@@ -8,7 +8,7 @@ This project houses my prototypes for "Core" interaction examples, including:
 4. Context Menu
 5. Touch Events and Mobile Handling
 
-This is a base project for my overall "Valhalla" project.
+This is a base project for my overall "Valhalla" project. This has effectively been obsoleted by the "DungeonEditor" prototype.
 
 ## Setting Up Project
 
