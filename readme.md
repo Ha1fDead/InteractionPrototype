@@ -8,6 +8,10 @@ This project houses my prototypes for "Core" interaction examples, including:
 4. Context Menu
 5. Touch Events and Mobile Handling
 
+The ultimate goal was to allow communication between the "Inside Canvas" elements and "Outside Canvas" elements. Providing some knowledge on how to link external menus into the canvas engine. I.e. user drags an "Item" onto the "Canvas" from their "Inventory" and the item drops on the ground near their "Pawn".
+
+You can see the prototype in action here: https://ha1fdead.github.io/InteractionPrototype/
+
 ## Setting Up Project
 
 - [use this command](https://stackoverflow.com/questions/35127383/npm-http-server-with-ssl)
